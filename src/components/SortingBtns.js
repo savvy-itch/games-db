@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeSortCategory } from '../features/sorting/sortingSlice';
+import { changeSortCategory, changeOrder } from '../features/sorting/sortingSlice';
+import { sortByCategory } from '../features/games/gamesSlice';
 
 const SORTING_OPTIONS = [
   'Rating',
@@ -9,11 +10,19 @@ const SORTING_OPTIONS = [
 ]
 
 export default function SortingBtns() {
-  const sortCategory = useSelector(state => state.sorting.sortBy);
+  const sorting = useSelector(state => state.sorting);
   const dispatch = useDispatch();
 
   function handleSortCategoryChange(e) {
-    dispatch(changeSortCategory({ sortBy: e.target.dataset.category}));
+    // if it's the same category, reverse sorting order
+    if (e.target.dataset.category === sorting.sortBy) {
+      dispatch(changeOrder({ descendingOrder: !sorting.descendingOrder }));  
+    } else {
+      // change category
+      dispatch(changeSortCategory({ sortBy: e.target.dataset.category }));
+      dispatch(changeOrder({ descendingOrder: true }));
+    }
+    dispatch(sortByCategory({ sortBy: sorting.sortBy, descendingOrder: sorting.descendingOrder}));
   }
 
   return (
@@ -21,7 +30,7 @@ export default function SortingBtns() {
       {SORTING_OPTIONS.map(option => {
         return (
         <button key={option} className={`
-        ${sortCategory === option ? 'bg-cyan-600/75 border-cyan-600/75' : 'bg-stone-500/75 border-stone-500/75'}
+        ${sorting.sortBy === option ? 'bg-cyan-600/75 border-cyan-600/75' : 'bg-stone-500/75 border-stone-500/75'}
         rounded-lg border text-sm text-white py-0.5 px-2 mx-1 transition-colors`}
         onClick={handleSortCategoryChange}
         data-category={option}

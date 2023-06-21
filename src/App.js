@@ -7,9 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import Pagination from './components/Pagination';
 import Error from './components/Error';
 import SortingBtns from './components/SortingBtns';
+import { sortByDefault } from './features/games/gamesSlice';
+import { changeOrder, changeSortCategory } from './features/sorting/sortingSlice';
 
 // sorting buttons
 // filter buttons
+// light/dark theme toggle
 // dropdown menu of matches on search input
 
 const pageSize = 10;
@@ -19,6 +22,7 @@ function App() {
   const [searchInput, setSearchInput] = useState('');
   const [currentData, setCurrentData] = useState(null);
   const pagination = useSelector(state => state.pagination);
+  const gamesList = useSelector(state => state.games.gamesList);
   const dispatch = useDispatch();
 
   const {
@@ -35,11 +39,14 @@ function App() {
       isSuccess: searchSuccess, 
       isError: searchError,
       error: searchErrorData 
-    }] = useLazyGetSearchQuery({}, { enabled: false });
+    }] = useLazyGetSearchQuery({}, { enabled: false }); // prevent automatic re-fetching
 
   useEffect(() => {
     if (games && games.length > 0) {
       setCurrentData(games);
+      dispatch(changeSortCategory({ sortBy: 'Rating' }));
+      dispatch(changeOrder({ descendingOrder: true }));
+      dispatch(sortByDefault({ gamesList: games }));
     }
   }, [games]);
 
@@ -52,6 +59,7 @@ function App() {
 
   useEffect(() => {
     if (currentData) {
+      dispatch(sortByDefault({ gamesList: currentData}));
       paginateGames(currentData);
     }
   }, [currentData, pagination.currentPage]);
@@ -78,10 +86,8 @@ function App() {
     trigger(searchInput);
     dispatch(onPageChange({ currentPage: 1 }));
     setSearchInput('');
-  }
-
-  function sortGames() {
-    //
+    dispatch(changeSortCategory({ sortBy: 'Rating' }));
+    dispatch(changeOrder({ descendingOrder: true }));
   }
 
   let content;
@@ -115,6 +121,7 @@ function App() {
                     return name;
                   })}
                 </p>
+                <p>{game.release_dates[0].y}</p>
               </div>
             </div>
           );

@@ -16,7 +16,7 @@ export const apiSlice = createApi({
           'Client-ID': 'vzpbw45ogroc6uffvsza60f6kd88im',
           'Authorization': 'Bearer uptot43uwwe8mp4c2ze30altqpkzbv',
         },
-        body: 'f name, cover.url, platforms.name, total_rating; w total_rating != n & cover != n & parent_game = n & version_parent = n; l 200;'
+        body: 'f name, cover.url, platforms.name, release_dates.y, total_rating; w total_rating != n & cover != n & parent_game = n & version_parent = n & release_dates.y != n; l 200;'
       }),
     }),
     getSearch: builder.query({
@@ -28,7 +28,7 @@ export const apiSlice = createApi({
           'Client-ID': 'vzpbw45ogroc6uffvsza60f6kd88im',
           'Authorization': 'Bearer uptot43uwwe8mp4c2ze30altqpkzbv',
         },
-        body: `search "${search}"; f game.name, game.cover.url, game.platforms.name, game.total_rating; w game.total_rating != n & game.cover != n & game.parent_game = n & game.version_parent = n; l 200;`
+        body: `search "${search}"; f game.name, game.cover.url, game.platforms.name, game.release_dates.y, game.total_rating; w game.total_rating != n & game.cover != n & game.parent_game = n & game.version_parent = n & game.release_dates.y != n; l 200;`
       })
     })
   })
