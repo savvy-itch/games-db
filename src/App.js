@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import Loading from './components/Loading';
-import './App.css';
 import { useGetGamesQuery, useLazyGetSearchQuery } from '../src/features/api/apiSlice';
-import { onPageChange } from './features/pagination/paginationSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import Pagination from './components/Pagination';
-import Error from './components/Error';
-import SortingBtns from './components/SortingBtns';
-import { sortByDefault } from './features/games/gamesSlice';
-import { changeOrder, changeSortCategory } from './features/sorting/sortingSlice';
+import './App.css';
 
-// sorting buttons
+import Loading from './components/Loading';
+import { setGames, sortByDefault } from './features/games/gamesSlice';
+import { onPageChange } from './features/pagination/paginationSlice';
+import Pagination from './components/Pagination'
+import { changeOrder, changeSortCategory } from './features/sorting/sortingSlice';
+import FilterSection from './features/filters/FilterSection';
+import SortingBtns from './components/SortingBtns';
+import Error from './components/Error';
+
 // filter buttons
 // light/dark theme toggle
 // dropdown menu of matches on search input
@@ -20,7 +21,6 @@ const pageSize = 10;
 function App() {
   const [paginatedGames, setPaginatedGames] = useState([]);
   const [searchInput, setSearchInput] = useState('');
-  const [currentData, setCurrentData] = useState(null);
   const pagination = useSelector(state => state.pagination);
   const gamesList = useSelector(state => state.games.gamesList);
   const dispatch = useDispatch();
@@ -43,39 +43,37 @@ function App() {
 
   useEffect(() => {
     if (games && games.length > 0) {
-      setCurrentData(games);
+      dispatch(setGames({ gamesList: games}));
       dispatch(changeSortCategory({ sortBy: 'Rating' }));
       dispatch(changeOrder({ descendingOrder: true }));
-      dispatch(sortByDefault({ gamesList: games }));
     }
-  }, [games]);
+  }, [games, dispatch]);
 
   useEffect(() => {
     if (searchResult) {
       const nestedSearchResults = searchResult.map(obj => obj.game);
-      setCurrentData(nestedSearchResults);
+      dispatch(setGames({ gamesList: nestedSearchResults}));
+      dispatch(sortByDefault());
     }
-  }, [searchResult]);
+  }, [searchResult, dispatch]);
 
   useEffect(() => {
-    if (currentData) {
-      dispatch(sortByDefault({ gamesList: currentData}));
-      paginateGames(currentData);
+    function paginateGames(results) {
+      let gamesForCurrentPage;
+      // if it's the 1st page
+      if (pagination.currentPage === 1) {
+        gamesForCurrentPage = results.slice(0, pageSize);
+      } else {
+        // subsequent pages
+        gamesForCurrentPage = results.slice((pagination.currentPage - 1) * pageSize, pagination.currentPage * pageSize);
+      }
+      setPaginatedGames(gamesForCurrentPage);
     }
-  }, [currentData, pagination.currentPage]);
 
-  function paginateGames(results) {
-    let gamesForCurrentPage;
-    
-    // if it's the 1st page
-    if (pagination.currentPage === 1) {
-      gamesForCurrentPage = results.slice(0, pageSize);
-    } else {
-      // subsequent pages
-      gamesForCurrentPage = results.slice((pagination.currentPage - 1) * pageSize, pagination.currentPage * pageSize);
+    if (gamesList) {
+      paginateGames(gamesList);
     }
-    setPaginatedGames(gamesForCurrentPage);
-  }
+  }, [gamesList, pagination.currentPage]);
 
   function handleSearchInputChange(e) {
     setSearchInput(e.target.value);
@@ -102,12 +100,13 @@ function App() {
   } else if (gamesSuccess || searchSuccess) {
     content = (
     <>
+      <FilterSection />
       <SortingBtns />
       <div className="grid grid-cols-2 gap-7">
         {paginatedGames.map((game) => {
           return (
             <div className="flex" key={game.id}>
-              <img src={game.cover?.url} alt={game.name} />
+              <img className="aspect-square object-none w-1/5" src={game.cover?.url} alt={game.name} />
               <div className="ml-2">
                 <p className="text-lg font-bold">{game.name}</p>
                 <p>Rating: {Math.round(game.total_rating)}/100</p>
@@ -127,7 +126,7 @@ function App() {
           );
         })}
       </div>
-      <Pagination pages={Math.ceil(currentData?.length / pageSize)} />
+      <Pagination pages={Math.ceil(gamesList?.length / pageSize)} />
     </>)
   } else if (gamesError || searchError) {
     const errorData = gamesError ? gamesErrorData : searchErrorData;

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeSortCategory, changeOrder } from '../features/sorting/sortingSlice';
 import { sortByCategory } from '../features/games/gamesSlice';
+import { BiSolidDownArrow } from "react-icons/bi";
 
 const SORTING_OPTIONS = [
   'Rating',
@@ -22,8 +23,11 @@ export default function SortingBtns() {
       dispatch(changeSortCategory({ sortBy: e.target.dataset.category }));
       dispatch(changeOrder({ descendingOrder: true }));
     }
-    dispatch(sortByCategory({ sortBy: sorting.sortBy, descendingOrder: sorting.descendingOrder}));
   }
+
+  useEffect(() => {
+    dispatch(sortByCategory({ sortBy: sorting.sortBy, descendingOrder: sorting.descendingOrder }));
+  }, [sorting.sortBy, sorting.descendingOrder, dispatch]);
 
   return (
     <div className="flex justify-end my-4">
@@ -31,11 +35,15 @@ export default function SortingBtns() {
         return (
         <button key={option} className={`
         ${sorting.sortBy === option ? 'bg-cyan-600/75 border-cyan-600/75' : 'bg-stone-500/75 border-stone-500/75'}
-        rounded-lg border text-sm text-white py-0.5 px-2 mx-1 transition-colors`}
+        flex items-center rounded-lg border text-sm text-white py-0.5 px-2 mx-1 min-w-11 transition-all`}
         onClick={handleSortCategoryChange}
         data-category={option}
         >
           {option}
+          {sorting.sortBy === option 
+            && <BiSolidDownArrow className={`transform ml-0.5 transition-transform 
+            ${sorting.descendingOrder ? 'rotate-0' : 'rotate-180'}`} />
+          }
         </button>)
       })}
     </div>

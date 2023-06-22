@@ -8,39 +8,31 @@ const gamesSlice = createSlice({
   name: "games",
   initialState,
   reducers: {
-    // setGames(state, action) ?
-     
-    sortByDefault(state, action) {
+    setGames(state, action) {
+      return {...state, gamesList: action.payload.gamesList}
+    },
+    sortByDefault(state) {
       // sort by descending order
-      let sortedGames = [...action.payload.gamesList].sort((a,b) => b.total_rating - a.total_rating);
+      let sortedGames = [...state.gamesList].sort((a,b) => b.total_rating - a.total_rating);
       return {...state, gamesList: sortedGames};
     },
     sortByCategory(state, action) {
       let sortedGames;
       const {sortBy, descendingOrder} = action.payload;
       if (sortBy === 'Rating') {
-        if (descendingOrder) {
-          sortedGames = [...state.gamesList].sort((a,b) => b.total_rating - a.total_rating);
-        } else {
-          sortedGames = [...state.gamesList].sort((a,b) => a.total_rating - b.total_rating);
-        }
+        sortedGames = [...state.gamesList].sort((a,b) => b.total_rating - a.total_rating);
       } else if (sortBy === 'Title') {
-        if (descendingOrder) {
-          sortedGames = [...state.gamesList].sort((a,b) => b.name - a.name);
-        } else {
-          sortedGames = [...state.gamesList].sort((a,b) => a.name - b.name);
-        }
+        sortedGames = [...state.gamesList].sort((a,b) => a.name.localeCompare(b.name));
       } else if (sortBy === 'Release Date') {
-        if (descendingOrder) {
-          sortedGames = [...state.gamesList].sort((a,b) => b.release_dates.y - a.release_dates.y);
-        } else {
-          sortedGames = [...state.gamesList].sort((a,b) => a.release_dates.y - b.release_dates.y);
-        }
+        sortedGames = [...state.gamesList].sort((a,b) => b.release_dates[0].y - a.release_dates[0].y);
+      }
+      if (!descendingOrder) {
+        sortedGames.reverse();
       }
       return { ...state, gamesList: sortedGames };
     }
   }
 })
 
-export const { sortByDefault, sortByCategory } = gamesSlice.actions;
+export const { setGames, sortByDefault, sortByCategory } = gamesSlice.actions;
 export default gamesSlice.reducer;
