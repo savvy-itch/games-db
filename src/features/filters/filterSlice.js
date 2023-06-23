@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  filters: [],
+  // currentFilterTab: 'Platforms',
+  selectedFilters: [],
 };
 
 const filterSlice = createSlice({
