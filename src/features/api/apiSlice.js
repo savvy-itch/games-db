@@ -54,8 +54,32 @@ export const apiSlice = createApi({
         },
         body: 'f name; l 50;'
       })
-    })
+    }),
+    getModes: builder.query({
+      query: () => ({
+        url: '/game_modes',
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Client-ID': 'vzpbw45ogroc6uffvsza60f6kd88im',
+          'Authorization': 'Bearer uptot43uwwe8mp4c2ze30altqpkzbv',
+        },
+        body: 'f name; l 20;'
+      })
+    }),
+    getPerspective: builder.query({
+      query: () => ({
+        url: '/player_perspectives',
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Client-ID': 'vzpbw45ogroc6uffvsza60f6kd88im',
+          'Authorization': 'Bearer uptot43uwwe8mp4c2ze30altqpkzbv',
+        },
+        body: 'f name; l 20;'
+      })
+    }),
   })
 })
 
-export const { useGetGamesQuery, useLazyGetSearchQuery, useGetGenresQuery, useGetThemesQuery } = apiSlice;
+export const { useGetGamesQuery, useLazyGetSearchQuery, useGetGenresQuery, useGetThemesQuery, useGetModesQuery, useGetPerspectiveQuery } = apiSlice;

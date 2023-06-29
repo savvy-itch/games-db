@@ -135,7 +135,7 @@ function App() {
 
   return (
     <div className="App flex flex-col items-center bg-slate-100">
-      <div className="w-8/12 bg-slate-200 p-2 min-h-screen">
+      <div className="w-9/12 bg-slate-200 p-2 min-h-screen">
         <h1 className="text-orange-600 text-center text-4xl	font-bold">Games DB</h1>
         <form className="flex my-3">
           <input className="rounded outline outline-2 outline-stone-400 transition-colors px-2 py-0.5 focus:outline-sky-600" type="text" 
