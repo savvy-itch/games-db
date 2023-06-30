@@ -10,10 +10,14 @@ const filterSlice = createSlice({
   initialState,
   reducers: {
     addFilter(state, action) {
-      return state
+      let appliedFilters = [];
+      appliedFilters = [...state.selectedFilters, action.payload.selectedFilter];
+      return {...state, selectedFilters: appliedFilters}
     },
     removeFilter(state, action) {
-      return state
+      let appliedFilters = [];
+      appliedFilters = [...state.selectedFilters].filter(filter => filter !== action.payload.selectedFilter);
+      return {...state, selectedFilters: appliedFilters}
     },
   }
 });

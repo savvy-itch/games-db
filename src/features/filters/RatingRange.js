@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import './RatingRange.css';
 
 const rangeMin = 0;
+const rangeMax = 100;
 
 export default function RatingRange() {
   const [minRating, setMinRating] = useState(0);
@@ -15,14 +16,25 @@ export default function RatingRange() {
       setMinRating(e.target.value);
       rangeRef.current.style.left = (e.target.value / 100) * 100 + "%";
     }
+    if (e.target.value >= maxRating - 10) {
+      setMinRating(maxRating - 10);
+      rangeRef.current.style.left = ((maxRating - 10) / 100) * 100 + "%";
+    }
+    if (e.target.value < rangeMin) {
+      setMinRating(rangeMin);
+    }
   }
 
   function handleMaxRatingChange(e) {
-    if (maxRating - minRating < rangeMin) {
-      setMaxRating(minRating + rangeMin);
+    if (e.target.value < parseInt(minRating) + 10) {
+      setMaxRating(parseInt(minRating) + 10);
+      rangeRef.current.style.right = 100 - ((parseInt(minRating) + 10) / 100) * 100 + "%";
     } else {
       setMaxRating(e.target.value);
-      rangeRef.current.style.right = (e.target.value / 100) * 100 + "%";
+      rangeRef.current.style.right = 100 - (e.target.value / 100) * 100 + "%";
+    }
+    if (e.target.value > rangeMax) {
+      setMaxRating(rangeMax);
     }
   }
 
@@ -42,8 +54,8 @@ export default function RatingRange() {
         <span ref={rangeRef} className="range-selected"></span>
       </div>
       <div className="range-input">
-        <input type="range" className="min" min="0" max="100" value={minRating} onChange={handleMinRatingChange} step="1" />
-        <input type="range" className="max" min="0" max="100" value={maxRating} onChange={handleMaxRatingChange} step="1" />
+        <input type="range" min="0" max="100" value={minRating} onChange={handleMinRatingChange} step="1" />
+        <input type="range" min="0" max="100" value={maxRating} onChange={handleMaxRatingChange} step="1" />
       </div>
     </div>
   )

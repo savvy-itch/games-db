@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useGetGenresQuery, useGetThemesQuery, useGetModesQuery, useGetPerspectiveQuery } from '../api/apiSlice';
 import FilterListBtn from './FilterListBtn';
 import RatingRange from './RatingRange';
@@ -31,7 +31,7 @@ const FILTERS = [
 export default function FilterSection() {
   const [currentFilterTab, setCurrentFilterTab] = useState(FILTERS[0].filterTab);
   const [filtersList, setFiltersList] = useState([]);
-  // const filtersState = useSelector(state => state.filters);
+  const filtersState = useSelector(state => state.filters);
 
   const { 
     data: genres,
@@ -151,7 +151,7 @@ export default function FilterSection() {
 
       {/* Applied filters */}
       <div>
-
+        {filtersState.selectedFilters}
       </div>
     </section>
   )
