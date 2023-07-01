@@ -3,10 +3,11 @@ import { useSelector } from 'react-redux';
 import { useGetGenresQuery, useGetThemesQuery, useGetModesQuery, useGetPerspectiveQuery } from '../api/apiSlice';
 import FilterListBtn from './FilterListBtn';
 import RatingRange from './RatingRange';
+import AppliedFilterBtn from './AppliedFilterBtn';
 
 const LAST_YEAR = 2025;
 const FIRST_YEAR = 1979;
-const years = Array.from({ length: LAST_YEAR - FIRST_YEAR }, (_, index) => LAST_YEAR - index);
+const years = Array.from({ length: LAST_YEAR - FIRST_YEAR }, (_, index) => (LAST_YEAR - index).toString());
 
 const FILTERS = [
   {
@@ -150,8 +151,10 @@ export default function FilterSection() {
       {filtersList}
 
       {/* Applied filters */}
-      <div>
-        {filtersState.selectedFilters}
+      <div className="flex flex-wrap my-5">
+        {filtersState.selectedFilters.map(filter => {
+          return <AppliedFilterBtn key={filter} filter={filter} />
+        })}
       </div>
     </section>
   )

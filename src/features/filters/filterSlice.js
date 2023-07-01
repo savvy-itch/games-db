@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   // currentFilterTab: 'Platforms',
   selectedFilters: [],
+  selectedMinRating: '',
+  selectedMaxRating: ''
 };
 
 const filterSlice = createSlice({
@@ -19,8 +21,14 @@ const filterSlice = createSlice({
       appliedFilters = [...state.selectedFilters].filter(filter => filter !== action.payload.selectedFilter);
       return {...state, selectedFilters: appliedFilters}
     },
+    addMinRatingFilter(state, action) {
+      return {...state, selectedMinRating: action.payload.selectedMinRating}
+    },
+    addMaxRatingFilter(state, action) {
+      return {...state, selectedMaxRating: action.payload.selectedMaxRating}
+    },
   }
 });
 
-export const { addFilter, removeFilter } = filterSlice.actions;
+export const { addFilter, removeFilter, addMinRatingFilter, addMaxRatingFilter } = filterSlice.actions;
 export default filterSlice.reducer;

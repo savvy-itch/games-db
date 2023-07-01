@@ -1,5 +1,7 @@
 import React, { useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import './RatingRange.css';
+import { addMinRatingFilter, addMaxRatingFilter } from './filterSlice';
 
 const rangeMin = 0;
 const rangeMax = 100;
@@ -8,20 +10,25 @@ export default function RatingRange() {
   const [minRating, setMinRating] = useState(0);
   const [maxRating, setMaxRating] = useState(100);
   const rangeRef = useRef(null);
+  const dispatch = useDispatch();
 
   function handleMinRatingChange(e) {
     if (maxRating - minRating < rangeMin) {
       setMinRating(maxRating - rangeMin);
+      dispatch(addMinRatingFilter({ selectedMinRating: (maxRating - rangeMin) }));
     } else {
       setMinRating(e.target.value);
       rangeRef.current.style.left = (e.target.value / 100) * 100 + "%";
+      dispatch(addMinRatingFilter({ selectedMinRating: e.target.value }));
     }
     if (e.target.value >= maxRating - 10) {
       setMinRating(maxRating - 10);
       rangeRef.current.style.left = ((maxRating - 10) / 100) * 100 + "%";
+      dispatch(addMinRatingFilter({ selectedMinRating: (maxRating - 10) }));
     }
     if (e.target.value < rangeMin) {
       setMinRating(rangeMin);
+      dispatch(addMinRatingFilter({ selectedMinRating: '' }));
     }
   }
 
@@ -29,6 +36,7 @@ export default function RatingRange() {
     if (e.target.value < parseInt(minRating) + 10) {
       setMaxRating(parseInt(minRating) + 10);
       rangeRef.current.style.right = 100 - ((parseInt(minRating) + 10) / 100) * 100 + "%";
+      dispatch(addMaxRatingFilter)
     } else {
       setMaxRating(e.target.value);
       rangeRef.current.style.right = 100 - (e.target.value / 100) * 100 + "%";
