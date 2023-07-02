@@ -21,14 +21,14 @@ const filterSlice = createSlice({
       appliedFilters = [...state.selectedFilters].filter(filter => filter !== action.payload.selectedFilter);
       return {...state, selectedFilters: appliedFilters}
     },
-    addMinRatingFilter(state, action) {
+    updateMinRatingFilter(state, action) {
       return {...state, selectedMinRating: action.payload.selectedMinRating}
     },
-    addMaxRatingFilter(state, action) {
+    updateMaxRatingFilter(state, action) {
       return {...state, selectedMaxRating: action.payload.selectedMaxRating}
     },
   }
 });
 
-export const { addFilter, removeFilter, addMinRatingFilter, addMaxRatingFilter } = filterSlice.actions;
+export const { addFilter, removeFilter, updateMinRatingFilter, updateMaxRatingFilter } = filterSlice.actions;
 export default filterSlice.reducer;

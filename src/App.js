@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
 
 import Loading from './components/Loading';
-import { setGames, sortByDefault } from './features/games/gamesSlice';
+import { setFetchedGames, setGames, sortByDefault } from './features/games/gamesSlice';
 import { onPageChange } from './features/pagination/paginationSlice';
 import Pagination from './components/Pagination'
 import { changeOrder, changeSortCategory } from './features/sorting/sortingSlice';
@@ -43,6 +43,9 @@ function App() {
 
   useEffect(() => {
     if (games && games.length > 0) {
+      // store fetched games
+      dispatch(setFetchedGames({ fetchedGamesList: games}));
+      // store games for displaying
       dispatch(setGames({ gamesList: games}));
       dispatch(changeSortCategory({ sortBy: 'Rating' }));
       dispatch(changeOrder({ descendingOrder: true }));
@@ -52,6 +55,8 @@ function App() {
   useEffect(() => {
     if (searchResult) {
       const nestedSearchResults = searchResult.map(obj => obj.game);
+      // store fetched games
+      dispatch(setFetchedGames({ fetchedGamesList: nestedSearchResults}));
       dispatch(setGames({ gamesList: nestedSearchResults}));
       dispatch(sortByDefault());
     }

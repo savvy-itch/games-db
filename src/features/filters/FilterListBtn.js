@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { addFilter, removeFilter } from './filterSlice';
+import { filterGames } from '../games/gamesSlice';
 
-export default function FilterListBtn({ filter }) {
+// fetched data should remain untouched and be stored in a slice
+// for filtering/sorting create a copy of fetched list
+
+export default function FilterListBtn({ filter, filterCategory }) {
   const [isAdded, setIsAdded] = useState(false);
   const filtersState = useSelector(state => state.filters);
   const dispatch = useDispatch();
 
-  function handleClick(e) {
+  function handleClick() {
     setIsAdded(!isAdded);
     if (isAdded) {
-      dispatch(removeFilter({selectedFilter: e.target.textContent}));
+      dispatch(removeFilter({ selectedFilter: filter }));
     } else {
-      dispatch(addFilter({selectedFilter: e.target.textContent}));
+      dispatch(addFilter({ selectedFilter: filter }));
+      dispatch(filterGames({ filterCategory: filterCategory, filter: filter }));
     }
   }
 

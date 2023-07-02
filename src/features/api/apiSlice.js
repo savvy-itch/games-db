@@ -16,7 +16,7 @@ export const apiSlice = createApi({
           'Client-ID': 'vzpbw45ogroc6uffvsza60f6kd88im',
           'Authorization': 'Bearer uptot43uwwe8mp4c2ze30altqpkzbv',
         },
-        body: 'f name, cover.url, platforms.name, release_dates.y, total_rating; w total_rating != n & cover != n & parent_game = n & version_parent = n & release_dates.y != n; l 200;'
+        body: 'f name, cover.url, genres.name, themes.name, game_modes.name, player_perspectives.name, platforms.name, release_dates.y, total_rating; w total_rating != n & cover != n & parent_game = n & version_parent = n & release_dates.y != n; l 200;'
       }),
     }),
     getSearch: builder.query({

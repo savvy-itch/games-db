@@ -1,13 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  gamesList: [],
+  // store fetched data here
+  fetchedGamesList: [],
+  // make a copy to filter/sort
+  gamesList: []
 };
 
 const gamesSlice = createSlice({
   name: "games",
   initialState,
   reducers: {
+    setFetchedGames(state, action) {
+      return {...state, fetchedGamesList: action.payload.fetchedGamesList}
+    },
     setGames(state, action) {
       return {...state, gamesList: action.payload.gamesList}
     },
@@ -30,9 +36,34 @@ const gamesSlice = createSlice({
         sortedGames.reverse();
       }
       return { ...state, gamesList: sortedGames };
+    },
+    filterGames(state, action) {
+      const { filterCategory, filter } = action.payload;
+      let filteredGames;
+      if (filterCategory === 'platforms') {
+        filteredGames = [...state.fetchedGamesList].filter(game => game.platforms.some(g => g.name === filter));
+      } else if (filterCategory === 'release_dates') {
+        filteredGames = [...state.fetchedGamesList].filter(game => game.release_dates.some(g => g.y === filter));
+      } else if (filterCategory === 'genres') {
+        filteredGames = [...state.fetchedGamesList].filter(game => game.genres.some(g => g.name === filter));
+      } else if (filterCategory === 'themes') {
+        filteredGames = [...state.fetchedGamesList].filter(game => game.themes.some(g => g.name === filter));
+      } else if (filterCategory === 'game_modes') {
+        filteredGames = [...state.fetchedGamesList].filter(game => game.game_modes.some(g => g.name === filter));
+      } else if (filterCategory === 'player_perspectives') {
+        filteredGames = [...state.fetchedGamesList].filter(game => game.player_perspectives.some(g => g.name === filter));
+      }
+
+      return {...state, gamesList: filteredGames};
+    },
+    unfilterGames(state, action) {
+      const { filterCategory, filter } = action.payload;
+      let filteredGames;
+      // code...
+      return {...state, gamesList: filteredGames};
     }
   }
 })
 
-export const { setGames, sortByDefault, sortByCategory } = gamesSlice.actions;
+export const { setFetchedGames, setGames, sortByDefault, sortByCategory, filterGames } = gamesSlice.actions;
 export default gamesSlice.reducer;

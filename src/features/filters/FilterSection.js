@@ -12,20 +12,25 @@ const years = Array.from({ length: LAST_YEAR - FIRST_YEAR }, (_, index) => (LAST
 const FILTERS = [
   {
     filterTab: 'Platforms',
+    fieldNameAPI: 'platforms',
     filters: ['Mac', 'PC (Microsoft Windows)', 'PlayStation', 'PlayStation 2', 'PlayStation 3', 'PlayStation 4', 'PlayStation 5', 'Xbox One', 'Xbox 360', 'Xbox', 'Xbox Series X|S', 'Nintendo Switch', 'Wii U', 'GameCube']
   },
   {
     filterTab: 'Years',
+    fieldNameAPI: 'release_dates',
     filters: years,
   },
   {
     filterTab: 'Genres/Themes',
+    fieldNameAPI: ['genres', 'themes']
   },
   {
     filterTab: 'Ratings',
+    fieldNameAPI: 'total_rating'
   },
   {
     filterTab: 'Modes/Perspective',
+    fieldNameAPI: ['game_modes', 'player_perspectives']
   },
 ]
 
@@ -66,17 +71,19 @@ export default function FilterSection() {
 
   useEffect(() => {
     if (currentFilterTab === 'Platforms') {
+      const filterObj = FILTERS.find(f => f.filterTab === currentFilterTab);
       setFiltersList(
         <div className="flex flex-wrap">
-        {FILTERS.find(f => f.filterTab === currentFilterTab).filters.map(f => {
-          return <FilterListBtn key={f} filter={f} />
+        {filterObj.filters.map(f => {
+          return <FilterListBtn key={f} filterCategory={filterObj.fieldNameAPI} filter={f} />
         })}
         </div>)
     } else if (currentFilterTab === 'Years') {
+      const filterObj = FILTERS.find(f => f.filterTab === currentFilterTab);
       setFiltersList(
         <div className="flex flex-wrap">
-        {FILTERS.find(f => f.filterTab === currentFilterTab).filters.map(f => {
-          return <FilterListBtn key={f} filter={f} />
+        {filterObj.filters.map(f => {
+          return <FilterListBtn key={f} filterCategory={filterObj.fieldNameAPI} filter={f} />
         })}
         </div>)
     } else if (currentFilterTab === 'Genres/Themes') {
@@ -85,18 +92,19 @@ export default function FilterSection() {
       } else if (genresError || themesError) {
         setFiltersList(<p>Error loading: {genresError ? genresError.error : themesError.error}</p>);
       } else {
+        const filterObj = FILTERS.find(f => f.filterTab === currentFilterTab);
         setFiltersList(
           <div>
             <h3>Genres</h3>
             <div className="flex flex-wrap">
             {genres.map(genre => {
-              return <FilterListBtn key={genre.name} filter={genre.name} />
+              return <FilterListBtn key={genre.name} filterCategory={filterObj.fieldNameAPI[0]} filter={genre.name} />
             })}
             </div>
             <h3>Themes</h3>
             <div className="flex flex-wrap">
             {themes.map(theme => {
-              return <FilterListBtn key={theme.name} filter={theme.name} />
+              return <FilterListBtn key={theme.name} filterCategory={filterObj.fieldNameAPI[1]} filter={theme.name} />
             })}
             </div>
           </div>
@@ -108,25 +116,27 @@ export default function FilterSection() {
       } else if (modesError || perspectiveError) {
         setFiltersList(<p>Error loading: {modesError ? modesError.error : perspectiveError.error}</p>);
       } else {
+        const filterObj = FILTERS.find(f => f.filterTab === currentFilterTab);
         setFiltersList(
           <div>
             <h3>Modes</h3>
             <div className="flex flex-wrap">
             {modes.map(mode => {
-              return <FilterListBtn key={mode.name} filter={mode.name} />
+              return <FilterListBtn key={mode.name} filterCategory={filterObj.fieldNameAPI[0]} filter={mode.name} />
             })}
             </div>
             <h3>Perspective</h3>
             <div className="flex flex-wrap">
             {perspective.map(perspective => {
-              return <FilterListBtn key={perspective.name} filter={perspective.name} />
+              return <FilterListBtn key={perspective.name} filterCategory={filterObj.fieldNameAPI[1]} filter={perspective.name} />
             })}
             </div>
           </div>
         )
       }
     } else if (currentFilterTab === 'Ratings') {
-      setFiltersList(<RatingRange />)
+      const filterObj = FILTERS.find(f => f.filterTab === currentFilterTab);
+      setFiltersList(<RatingRange filterCategory={filterObj.fieldNameAPI}  />)
     }
   }, [currentFilterTab, genres, genresError, genresLoading, themes, themesError, modes, modesError, modesLoading, perspective, perspectiveError,perspectiveLoading, themesLoading]);
 
@@ -155,6 +165,8 @@ export default function FilterSection() {
         {filtersState.selectedFilters.map(filter => {
           return <AppliedFilterBtn key={filter} filter={filter} />
         })}
+        {filtersState.selectedMinRating !== '' && <AppliedFilterBtn minRating={filtersState.selectedMinRating} />}
+        {filtersState.selectedMaxRating !== '' && <AppliedFilterBtn maxRating={filtersState.selectedMaxRating} />}
       </div>
     </section>
   )
