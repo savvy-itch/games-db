@@ -11,6 +11,7 @@ import { changeOrder, changeSortCategory } from './features/sorting/sortingSlice
 import FilterSection from './features/filters/FilterSection';
 import SortingBtns from './components/SortingBtns';
 import Error from './components/Error';
+import { unixToDate } from './helpers';
 
 // filter buttons
 // light/dark theme toggle
@@ -21,8 +22,10 @@ const pageSize = 10;
 function App() {
   const [paginatedGames, setPaginatedGames] = useState([]);
   const [searchInput, setSearchInput] = useState('');
+  // needed to determine when filtering whether new data should be fetched or not
+  const [isSearch, setIsSearch] = useState(false);
   const pagination = useSelector(state => state.pagination);
-  const gamesList = useSelector(state => state.games.gamesList);
+  const gamesState = useSelector(state => state.games);
   const dispatch = useDispatch();
 
   const {
@@ -75,10 +78,10 @@ function App() {
       setPaginatedGames(gamesForCurrentPage);
     }
 
-    if (gamesList) {
-      paginateGames(gamesList);
+    if (gamesState.gamesList) {
+      paginateGames(gamesState.gamesList);
     }
-  }, [gamesList, pagination.currentPage]);
+  }, [gamesState.gamesList, pagination.currentPage]);
 
   function handleSearchInputChange(e) {
     setSearchInput(e.target.value);
@@ -86,6 +89,7 @@ function App() {
 
   function handleSearchSubmit(e) {
     e.preventDefault();
+    setIsSearch(true);
     trigger(searchInput);
     dispatch(onPageChange({ currentPage: 1 }));
     setSearchInput('');
@@ -105,7 +109,7 @@ function App() {
   } else if (gamesSuccess || searchSuccess) {
     content = (
     <>
-      <FilterSection />
+      <FilterSection isSearch={isSearch} />
       <SortingBtns />
       <div className="grid grid-cols-2 gap-7">
         {paginatedGames.map((game) => {
@@ -125,13 +129,13 @@ function App() {
                     return name;
                   })}
                 </p>
-                <p>{game.release_dates[0].y}</p>
+                <p>{unixToDate(game.first_release_date)}</p>
               </div>
             </div>
           );
         })}
       </div>
-      <Pagination pages={Math.ceil(gamesList?.length / pageSize)} />
+      <Pagination pages={Math.ceil(gamesState.gamesList?.length / pageSize)} />
     </>)
   } else if (gamesError || searchError) {
     const errorData = gamesError ? gamesErrorData : searchErrorData;

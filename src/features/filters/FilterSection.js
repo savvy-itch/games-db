@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useGetGenresQuery, useGetThemesQuery, useGetModesQuery, useGetPerspectiveQuery } from '../api/apiSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useGetGenresQuery, useGetThemesQuery, useGetModesQuery, useGetPerspectiveQuery, useLazyGetFilteredResultsQuery } from '../api/apiSlice';
+import { filterGames } from '../games/gamesSlice';
+import { setGames, setFetchedGames } from '../games/gamesSlice';
 import FilterListBtn from './FilterListBtn';
 import RatingRange from './RatingRange';
 import AppliedFilterBtn from './AppliedFilterBtn';
@@ -17,7 +19,7 @@ const FILTERS = [
   },
   {
     filterTab: 'Years',
-    fieldNameAPI: 'release_dates',
+    fieldNameAPI: 'first_release_date',
     filters: years,
   },
   {
@@ -34,10 +36,11 @@ const FILTERS = [
   },
 ]
 
-export default function FilterSection() {
+export default function FilterSection({ isSearch }) {
   const [currentFilterTab, setCurrentFilterTab] = useState(FILTERS[0].filterTab);
   const [filtersList, setFiltersList] = useState([]);
   const filtersState = useSelector(state => state.filters);
+  const dispatch = useDispatch();
 
   const { 
     data: genres,
@@ -62,6 +65,14 @@ export default function FilterSection() {
     isLoading: perspectiveLoading,
     isError: perspectiveError,
   } = useGetPerspectiveQuery();
+
+  const [
+    trigger, 
+    { data: searchResult, 
+      isSuccess, 
+      isError,
+      error 
+    }] = useLazyGetFilteredResultsQuery({}, { enabled: false }); // prevent automatic re-fetching
 
   function changeCurrentTab(e) {
     if (e.target.dataset.tab !== currentFilterTab) {
@@ -138,8 +149,27 @@ export default function FilterSection() {
       const filterObj = FILTERS.find(f => f.filterTab === currentFilterTab);
       setFiltersList(<RatingRange filterCategory={filterObj.fieldNameAPI}  />)
     }
-  }, [currentFilterTab, genres, genresError, genresLoading, themes, themesError, modes, modesError, modesLoading, perspective, perspectiveError,perspectiveLoading, themesLoading]);
+  }, [currentFilterTab, genres, genresError, genresLoading, themes, themesError, modes, modesError, modesLoading, perspective, perspectiveError, perspectiveLoading, themesLoading]);
 
+  useEffect(() => {
+    // if search results need to be filtered
+    if (isSearch) {
+      // filter already fetched games
+      dispatch(filterGames({ filters: filtersState.selectedFilters }));
+    } else {
+      // if default games need to be filtered
+      if (filtersState.selectedFilters.length > 0) {
+        // fetch games with selected filters
+        trigger(filtersState.selectedFilters);
+        if (searchResult) {
+          // const nestedSearchResults = searchResult.map(obj => obj.game);
+          console.log(searchResult);
+          dispatch(setFetchedGames({ fetchedGamesList: searchResult}));
+          dispatch(setGames({ gamesList: searchResult}));
+        }
+      }
+    }
+  }, [dispatch, filtersState.selectedFilters, isSearch, trigger, searchResult]);
 
   return (
     <section>
@@ -163,7 +193,7 @@ export default function FilterSection() {
       {/* Applied filters */}
       <div className="flex flex-wrap my-5">
         {filtersState.selectedFilters.map(filter => {
-          return <AppliedFilterBtn key={filter} filter={filter} />
+          return <AppliedFilterBtn key={filter[1]} filterCategory={filter[0]} filter={filter[1]} />
         })}
         {filtersState.selectedMinRating !== '' && <AppliedFilterBtn minRating={filtersState.selectedMinRating} />}
         {filtersState.selectedMaxRating !== '' && <AppliedFilterBtn maxRating={filtersState.selectedMaxRating} />}

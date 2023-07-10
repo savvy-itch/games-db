@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { unixToDate } from "../../helpers";
 
 const initialState = {
   // store fetched data here
   fetchedGamesList: [],
   // make a copy to filter/sort
-  gamesList: []
+  gamesList: [],
+  // isSearch: false,
 };
 
 const gamesSlice = createSlice({
@@ -30,7 +32,7 @@ const gamesSlice = createSlice({
       } else if (sortBy === 'Title') {
         sortedGames = [...state.gamesList].sort((a,b) => a.name.localeCompare(b.name));
       } else if (sortBy === 'Release Date') {
-        sortedGames = [...state.gamesList].sort((a,b) => b.release_dates[0].y - a.release_dates[0].y);
+        sortedGames = [...state.gamesList].sort((a,b) => b.first_release_date - a.first_release_date);
       }
       if (!descendingOrder) {
         sortedGames.reverse();
@@ -38,30 +40,29 @@ const gamesSlice = createSlice({
       return { ...state, gamesList: sortedGames };
     },
     filterGames(state, action) {
-      const { filterCategory, filter } = action.payload;
-      let filteredGames;
-      if (filterCategory === 'platforms') {
-        filteredGames = [...state.fetchedGamesList].filter(game => game.platforms.some(g => g.name === filter));
-      } else if (filterCategory === 'release_dates') {
-        filteredGames = [...state.fetchedGamesList].filter(game => game.release_dates.some(g => g.y === filter));
-      } else if (filterCategory === 'genres') {
-        filteredGames = [...state.fetchedGamesList].filter(game => game.genres.some(g => g.name === filter));
-      } else if (filterCategory === 'themes') {
-        filteredGames = [...state.fetchedGamesList].filter(game => game.themes.some(g => g.name === filter));
-      } else if (filterCategory === 'game_modes') {
-        filteredGames = [...state.fetchedGamesList].filter(game => game.game_modes.some(g => g.name === filter));
-      } else if (filterCategory === 'player_perspectives') {
-        filteredGames = [...state.fetchedGamesList].filter(game => game.player_perspectives.some(g => g.name === filter));
-      }
-
+      let filteredGames = [...state.fetchedGamesList];
+      action.payload.filters.forEach(filter => {
+        if (filter[0] === 'platforms') {
+          filteredGames = filteredGames.filter(game => game.platforms.some(g => g.name === filter[1]));
+        }
+        if (filter[0] === 'release_dates') {
+          filteredGames = filteredGames.filter(game => unixToDate(game.first_release_date) === filter[1]);
+        }
+        if (filter[0] === 'genres') {
+          filteredGames = filteredGames.filter(game => game.genres.some(g => g.name === filter[1]));
+        }
+        if (filter[0] === 'themes') {
+          filteredGames = filteredGames.filter(game => game.themes.some(g => g.name === filter[1]));
+        }
+        if (filter[0] === 'game_modes') {
+          filteredGames = filteredGames.filter(game => game.game_modes.some(g => g.name === filter[1]));
+        }
+        if (filter[0] === 'player_perspectives') {
+          filteredGames = filteredGames.filter(game => game.player_perspectives.some(g => g.name === filter[1]));
+        }
+      })
       return {...state, gamesList: filteredGames};
     },
-    unfilterGames(state, action) {
-      const { filterCategory, filter } = action.payload;
-      let filteredGames;
-      // code...
-      return {...state, gamesList: filteredGames};
-    }
   }
 })
 

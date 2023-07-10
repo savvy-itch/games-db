@@ -11,19 +11,27 @@ export default function FilterListBtn({ filter, filterCategory }) {
   const filtersState = useSelector(state => state.filters);
   const dispatch = useDispatch();
 
+  // const memoizedDispatch = useCallback(() => {
+  //   dispatch(filterGames({ filters: filtersState.selectedFilters }));
+  // }, [dispatch, filtersState.selectedFilters]);
+
   function handleClick() {
     setIsAdded(!isAdded);
     if (isAdded) {
-      dispatch(removeFilter({ selectedFilter: filter }));
+      dispatch(removeFilter({ selectedFilter: [filterCategory, filter] }));
     } else {
-      dispatch(addFilter({ selectedFilter: filter }));
-      dispatch(filterGames({ filterCategory: filterCategory, filter: filter }));
+      dispatch(addFilter({ selectedFilter: [filterCategory, filter] }));
     }
+    // dispatch(filterGames({ filters: filtersState.selectedFilters }));
   }
+
+  // useEffect(() => {
+  //   dispatch(filterGames({ filters: filtersState.selectedFilters }));
+  // }, [dispatch, filtersState.selectedFilters]);
 
   // if filter was removed by AppliedFilterBtn click, remove FilterListBtn highlight
   useEffect(() => {
-    if (filtersState.selectedFilters.find(sf => sf === filter)) {
+    if (filtersState.selectedFilters.find(sf => sf[1] === filter)) {
       setIsAdded(true);
     } else {
       setIsAdded(false);
