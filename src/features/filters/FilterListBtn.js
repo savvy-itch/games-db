@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { addFilter, removeFilter } from './filterSlice';
-import { filterGames } from '../games/gamesSlice';
 
 // fetched data should remain untouched and be stored in a slice
 // for filtering/sorting create a copy of fetched list
@@ -11,10 +10,6 @@ export default function FilterListBtn({ filter, filterCategory }) {
   const filtersState = useSelector(state => state.filters);
   const dispatch = useDispatch();
 
-  // const memoizedDispatch = useCallback(() => {
-  //   dispatch(filterGames({ filters: filtersState.selectedFilters }));
-  // }, [dispatch, filtersState.selectedFilters]);
-
   function handleClick() {
     setIsAdded(!isAdded);
     if (isAdded) {
@@ -22,12 +17,7 @@ export default function FilterListBtn({ filter, filterCategory }) {
     } else {
       dispatch(addFilter({ selectedFilter: [filterCategory, filter] }));
     }
-    // dispatch(filterGames({ filters: filtersState.selectedFilters }));
   }
-
-  // useEffect(() => {
-  //   dispatch(filterGames({ filters: filtersState.selectedFilters }));
-  // }, [dispatch, filtersState.selectedFilters]);
 
   // if filter was removed by AppliedFilterBtn click, remove FilterListBtn highlight
   useEffect(() => {

@@ -1,4 +1,4 @@
-# Games DB
+# Games DB (work in progress)
 
 Web app for video games queries.
 

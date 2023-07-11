@@ -13,9 +13,13 @@ import SortingBtns from './components/SortingBtns';
 import Error from './components/Error';
 import { unixToDate } from './helpers';
 
+
+// filters for search results
 // filter buttons
 // light/dark theme toggle
 // dropdown menu of matches on search input
+// add loaders between data fetching
+// remove filterCategory from an array when dispatcihng removeFilter if it ends up not needed
 
 const pageSize = 10;
 

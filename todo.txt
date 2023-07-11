@@ -1,6 +1,7 @@
-- error page
+- filter & cancel filters (fetch data if needed);
+  - rating filter
 - add color theme toggle;
-- add search field
-- filter by genre, year, platform, etc.;
+- dropdown menu of matches on search input
+- add loaders between data fetching
 - add games to played list;
 - mark games as favourites;

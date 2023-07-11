@@ -8,6 +8,18 @@ const HEADERS = {
   'Authorization': 'Bearer uptot43uwwe8mp4c2ze30altqpkzbv',
 }
 
+function buildFiltersBody(filter) {
+  let filtersBody = ''; 
+  if (filter[0] === 'platforms' || filter[0] === 'genres' || filter[0] === 'themes' || filter[0] === 'game_modes' || filter[0] === 'player_perspectives') {
+    filtersBody = `& ${filter[0]}.name = "${filter[1]}" `;
+  } else if (filter[0] === 'first_release_date') {
+    filtersBody = `& ${filter[0]} > ${yearToUnix(filter[1], 'start')} & ${filter[0]} < ${yearToUnix(filter[1], 'end')}`;
+  } else if (filter[0] === 'total_rating') {
+    filtersBody = ``;
+  }
+  return filtersBody;
+}
+
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: url }),
@@ -68,9 +80,7 @@ export const apiSlice = createApi({
         method: 'POST',
         headers: HEADERS,
         body: `f name, cover.url, platforms.name, first_release_date, total_rating; w total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n 
-        ${filters.map(filter => {return filter[0] === 'first_release_date' 
-        ? `& ${filter[0]} > ${yearToUnix(filter[1], 'start')} & ${filter[0]} < ${yearToUnix(filter[1], 'end')}` 
-        : `& ${filter[0]} = ${filter[1]}`})}; l 200;`
+        ${filters.map(filter => {return `${buildFiltersBody(filter)}`}).join('')}; l 200;`
       })
     }),
   })

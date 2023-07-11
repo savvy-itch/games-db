@@ -42,24 +42,28 @@ export default function FilterSection({ isSearch }) {
   const filtersState = useSelector(state => state.filters);
   const dispatch = useDispatch();
 
+  // genre filters query
   const { 
     data: genres,
     isLoading: genresLoading, 
     isError: genresError,
   } = useGetGenresQuery();
 
+  // theme filters query
   const {
     data: themes,
     isLoading: themesLoading,
     isError: themesError,
   } = useGetThemesQuery();
 
+  // mode filters query
   const {
     data: modes,
     isLoading: modesLoading,
     isError: modesError,
   } = useGetModesQuery();
 
+  // perspective filters query
   const {
     data: perspective,
     isLoading: perspectiveLoading,
@@ -69,9 +73,6 @@ export default function FilterSection({ isSearch }) {
   const [
     trigger, 
     { data: searchResult, 
-      isSuccess, 
-      isError,
-      error 
     }] = useLazyGetFilteredResultsQuery({}, { enabled: false }); // prevent automatic re-fetching
 
   function changeCurrentTab(e) {
@@ -158,15 +159,11 @@ export default function FilterSection({ isSearch }) {
       dispatch(filterGames({ filters: filtersState.selectedFilters }));
     } else {
       // if default games need to be filtered
-      if (filtersState.selectedFilters.length > 0) {
-        // fetch games with selected filters
-        trigger(filtersState.selectedFilters);
-        if (searchResult) {
-          // const nestedSearchResults = searchResult.map(obj => obj.game);
-          console.log(searchResult);
-          dispatch(setFetchedGames({ fetchedGamesList: searchResult}));
-          dispatch(setGames({ gamesList: searchResult}));
-        }
+      // fetch games with selected filters
+      trigger(filtersState.selectedFilters);
+      if (searchResult) {
+        dispatch(setFetchedGames({ fetchedGamesList: searchResult}));
+        dispatch(setGames({ gamesList: searchResult}));
       }
     }
   }, [dispatch, filtersState.selectedFilters, isSearch, trigger, searchResult]);
