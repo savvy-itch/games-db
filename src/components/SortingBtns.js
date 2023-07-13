@@ -15,12 +15,13 @@ export default function SortingBtns() {
   const dispatch = useDispatch();
 
   function handleSortCategoryChange(e) {
+    console.log(e.currentTarget);
     // if it's the same category, reverse sorting order
-    if (e.target.dataset.category === sorting.sortBy) {
+    if (e.currentTarget.dataset.category === sorting.sortBy) {
       dispatch(changeOrder({ descendingOrder: !sorting.descendingOrder }));  
     } else {
       // change category
-      dispatch(changeSortCategory({ sortBy: e.target.dataset.category }));
+      dispatch(changeSortCategory({ sortBy: e.currentTarget.dataset.category }));
       dispatch(changeOrder({ descendingOrder: true }));
     }
   }

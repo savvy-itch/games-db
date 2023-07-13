@@ -156,17 +156,17 @@ export default function FilterSection({ isSearch }) {
     // if search results need to be filtered
     if (isSearch) {
       // filter already fetched games
-      dispatch(filterGames({ filters: filtersState.selectedFilters }));
+      dispatch(filterGames({ filters: filtersState.selectedFilters, minRating: filtersState.selectedMinRating, maxRating: filtersState.selectedMaxRating }));
     } else {
       // if default games need to be filtered
       // fetch games with selected filters
-      trigger(filtersState.selectedFilters);
+      trigger(filtersState);
       if (searchResult) {
         dispatch(setFetchedGames({ fetchedGamesList: searchResult}));
         dispatch(setGames({ gamesList: searchResult}));
       }
     }
-  }, [dispatch, filtersState.selectedFilters, isSearch, trigger, searchResult]);
+  }, [dispatch, filtersState, isSearch, trigger, searchResult]);
 
   return (
     <section>

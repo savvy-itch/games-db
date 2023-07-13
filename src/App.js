@@ -10,12 +10,10 @@ import Pagination from './components/Pagination'
 import { changeOrder, changeSortCategory } from './features/sorting/sortingSlice';
 import FilterSection from './features/filters/FilterSection';
 import SortingBtns from './components/SortingBtns';
+import ThemeToggle from './features/theme/ThemeToggle';
 import Error from './components/Error';
 import { unixToDate } from './helpers';
 
-
-// filters for search results
-// filter buttons
 // light/dark theme toggle
 // dropdown menu of matches on search input
 // add loaders between data fetching
@@ -147,7 +145,8 @@ function App() {
   }
 
   return (
-    <div className="App flex flex-col items-center bg-slate-100">
+    <div className="App flex flex-col items-center bg-slate-100 dark:bg-slate-800">
+      <ThemeToggle />
       <div className="w-9/12 bg-slate-200 p-2 min-h-screen">
         <h1 className="text-orange-600 text-center text-4xl	font-bold">Games DB</h1>
         <form className="flex my-3">

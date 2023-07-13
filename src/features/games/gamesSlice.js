@@ -1,12 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { unixToDate } from "../../helpers";
+import { yearToUnix } from "../../helpers";
 
 const initialState = {
   // store fetched data here
   fetchedGamesList: [],
   // make a copy to filter/sort
   gamesList: [],
-  // isSearch: false,
 };
 
 const gamesSlice = createSlice({
@@ -20,20 +19,21 @@ const gamesSlice = createSlice({
       return {...state, gamesList: action.payload.gamesList}
     },
     sortByDefault(state) {
-      // sort by descending order
+      // sort in descending order
       let sortedGames = [...state.gamesList].sort((a,b) => b.total_rating - a.total_rating);
       return {...state, gamesList: sortedGames};
     },
     sortByCategory(state, action) {
-      let sortedGames;
+      let sortedGames = [...state.gamesList];
       const {sortBy, descendingOrder} = action.payload;
       if (sortBy === 'Rating') {
-        sortedGames = [...state.gamesList].sort((a,b) => b.total_rating - a.total_rating);
+        sortedGames = sortedGames.sort((a,b) => b.total_rating - a.total_rating);
       } else if (sortBy === 'Title') {
-        sortedGames = [...state.gamesList].sort((a,b) => a.name.localeCompare(b.name));
+        sortedGames = sortedGames.sort((a,b) => a.name.localeCompare(b.name));
       } else if (sortBy === 'Release Date') {
-        sortedGames = [...state.gamesList].sort((a,b) => b.first_release_date - a.first_release_date);
+        sortedGames = sortedGames.sort((a,b) => b.first_release_date - a.first_release_date);
       }
+      // reverse order
       if (!descendingOrder) {
         sortedGames.reverse();
       }
@@ -45,8 +45,8 @@ const gamesSlice = createSlice({
         if (filter[0] === 'platforms') {
           filteredGames = filteredGames.filter(game => game.platforms.some(g => g.name === filter[1]));
         }
-        if (filter[0] === 'release_dates') {
-          filteredGames = filteredGames.filter(game => unixToDate(game.first_release_date) === filter[1]);
+        if (filter[0] === 'first_release_date') {
+          filteredGames = filteredGames.filter(game => game.first_release_date > yearToUnix(filter[1], 'start') && game.first_release_date < yearToUnix(filter[1], 'end'));
         }
         if (filter[0] === 'genres') {
           filteredGames = filteredGames.filter(game => game.genres.some(g => g.name === filter[1]));
@@ -60,7 +60,13 @@ const gamesSlice = createSlice({
         if (filter[0] === 'player_perspectives') {
           filteredGames = filteredGames.filter(game => game.player_perspectives.some(g => g.name === filter[1]));
         }
-      })
+      });
+      if (action.payload.minRating !== '') {
+        filteredGames = filteredGames.filter(game => game.total_rating > action.payload.minRating);
+      }
+      if (action.payload.maxRating !== '') {
+        filteredGames = filteredGames.filter(game => game.total_rating < action.payload.maxRating);
+      }
       return {...state, gamesList: filteredGames};
     },
   }

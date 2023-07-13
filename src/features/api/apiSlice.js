@@ -14,8 +14,6 @@ function buildFiltersBody(filter) {
     filtersBody = `& ${filter[0]}.name = "${filter[1]}" `;
   } else if (filter[0] === 'first_release_date') {
     filtersBody = `& ${filter[0]} > ${yearToUnix(filter[1], 'start')} & ${filter[0]} < ${yearToUnix(filter[1], 'end')}`;
-  } else if (filter[0] === 'total_rating') {
-    filtersBody = ``;
   }
   return filtersBody;
 }
@@ -80,7 +78,14 @@ export const apiSlice = createApi({
         method: 'POST',
         headers: HEADERS,
         body: `f name, cover.url, platforms.name, first_release_date, total_rating; w total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n 
-        ${filters.map(filter => {return `${buildFiltersBody(filter)}`}).join('')}; l 200;`
+        ${filters.selectedFilters.map(filter => {return `${buildFiltersBody(filter)}`}).join('')}
+        ${filters.selectedMinRating > 0
+        ? `& total_rating > ${filters.selectedMinRating}`
+        : ''}
+        ${filters.selectedMaxRating > 0
+        ? `& total_rating < ${filters.selectedMaxRating}`
+        : ''}
+        ; l 200;`
       })
     }),
   })

@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import './RatingRange.css';
 import { updateMinRatingFilter, updateMaxRatingFilter } from './filterSlice';
 
@@ -10,6 +10,7 @@ export default function RatingRange() {
   const [minRating, setMinRating] = useState(0);
   const [maxRating, setMaxRating] = useState(100);
   const rangeRef = useRef(null);
+  const filtersState = useSelector(state => state.filters);
   const dispatch = useDispatch();
 
   function handleMinRatingChange(e) {
@@ -21,6 +22,7 @@ export default function RatingRange() {
       rangeRef.current.style.left = (e.target.value / 100) * 100 + "%";
       dispatch(updateMinRatingFilter({ selectedMinRating: e.target.value }));
     }
+    // if min rating is too close to max rating
     if (e.target.value >= maxRating - 10) {
       setMinRating(maxRating - 10);
       rangeRef.current.style.left = ((maxRating - 10) / 100) * 100 + "%";
@@ -38,6 +40,7 @@ export default function RatingRange() {
   }
 
   function handleMaxRatingChange(e) {
+    // if max rating is too close to min rating
     if (e.target.value < parseInt(minRating) + 10) {
       setMaxRating(parseInt(minRating) + 10);
       rangeRef.current.style.right = 100 - ((parseInt(minRating) + 10) / 100) * 100 + "%";
@@ -57,6 +60,18 @@ export default function RatingRange() {
       dispatch(updateMaxRatingFilter({ selectedMaxRating: '' }));
     }
   }
+
+  // when AppliedFilterBtn for rating is removed, set the rating to default
+  useEffect(() => {
+    if (filtersState.selectedMinRating === '') {
+      setMinRating(rangeMin);
+      rangeRef.current.style.left = "0";
+    }
+    if (filtersState.selectedMaxRating === '') {
+      setMaxRating(rangeMax);
+      rangeRef.current.style.right = "0";
+    }
+  }, [filtersState.selectedMinRating, filtersState.selectedMaxRating]);
 
   return (
     <div className="w-8/12">
