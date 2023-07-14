@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useGetGamesQuery, useLazyGetSearchQuery } from '../src/features/api/apiSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
+import './index.css';
 
 import Loading from './components/Loading';
 import { setFetchedGames, setGames, sortByDefault } from './features/games/gamesSlice';
@@ -10,11 +11,13 @@ import Pagination from './components/Pagination'
 import { changeOrder, changeSortCategory } from './features/sorting/sortingSlice';
 import FilterSection from './features/filters/FilterSection';
 import SortingBtns from './components/SortingBtns';
-import ThemeToggle from './features/theme/ThemeToggle';
 import Error from './components/Error';
+import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import { unixToDate } from './helpers';
+import useDarkSide from './features/theme/useDarkSide';
 
 // light/dark theme toggle
+// single game page
 // dropdown menu of matches on search input
 // add loaders between data fetching
 // remove filterCategory from an array when dispatcihng removeFilter if it ends up not needed
@@ -29,6 +32,15 @@ function App() {
   const pagination = useSelector(state => state.pagination);
   const gamesState = useSelector(state => state.games);
   const dispatch = useDispatch();
+  const [colorTheme, setTheme] = useDarkSide();
+  const [darkSide, setDarkSide] = useState(
+    colorTheme === "light" ? true : false
+  );
+
+  const toggleDarkMode = (checked) => {
+    setTheme(colorTheme);
+    setDarkSide(checked);
+  }
 
   const {
     data: games,
@@ -145,9 +157,8 @@ function App() {
   }
 
   return (
-    <div className="App flex flex-col items-center bg-slate-100 dark:bg-slate-800">
-      <ThemeToggle />
-      <div className="w-9/12 bg-slate-200 p-2 min-h-screen">
+    <div className="App flex flex-col items-center bg-slate-100 dark:bg-slate-800 transition-colors">
+      <div className="flex justify-between w-9/12 items-center">
         <h1 className="text-orange-600 text-center text-4xl	font-bold">Games DB</h1>
         <form className="flex my-3">
           <input className="rounded outline outline-2 outline-stone-400 transition-colors px-2 py-0.5 focus:outline-sky-600" type="text" 
@@ -161,6 +172,9 @@ function App() {
             search
           </button>
         </form>
+        <DarkModeSwitch checked={darkSide} onChange={toggleDarkMode} />
+      </div>
+      <div className="w-9/12 bg-slate-200 p-2 min-h-screen">
         {content}
       </div>
     </div>
