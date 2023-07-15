@@ -5,7 +5,12 @@ module.exports = {
   ],
   darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+      boxSizing: ['border-box'],
+    },
+  },
+  corePlugins: {
+    boxSizing: false,
   },
   plugins: [],
 }

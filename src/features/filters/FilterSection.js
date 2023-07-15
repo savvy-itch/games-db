@@ -171,11 +171,13 @@ export default function FilterSection({ isSearch }) {
   return (
     <section>
       {/* Filter Tabs */}
-      <div className="flex justify-center">
-        {FILTERS.map(filter => {
+      <div className="flex justify-center my-2.5">
+        {FILTERS.map((filter, index) => {
           return <button key={filter.filterTab} className={`${filter.filterTab === currentFilterTab 
             ? 'bg-cyan-600/75 hover:bg-cyan-600/75'
-            : 'bg-stone-500/75 hover:bg-stone-600/75'} flex items-center text-sm text-white px-5 py-4`}
+            : 'bg-stone-500/75 hover:bg-stone-600/75'} 
+            ${index === 0 ? 'rounded-l' : ''} ${index === FILTERS.length - 1 ? 'rounded-r' : ''}
+            flex items-center text-sm text-white px-5 py-4`}
             onClick={changeCurrentTab}
             data-tab={filter.filterTab}
             >
