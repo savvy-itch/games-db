@@ -14,7 +14,7 @@ export default function ThemeSwitch() {
   }
 
   return (
-    <div className="flex justify-center items-center p-1 rounded-lg border-solid border-2 border-stone-500 dark:border-white">
+    <div className="flex justify-center items-center p-1 ml-3 rounded-lg border-solid border-2 border-stone-500 dark:border-white">
       <DarkModeSwitch checked={darkSide} onChange={toggleDarkMode} />
     </div>
   )

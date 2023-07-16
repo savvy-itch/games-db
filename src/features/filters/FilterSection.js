@@ -107,13 +107,13 @@ export default function FilterSection({ isSearch }) {
         const filterObj = FILTERS.find(f => f.filterTab === currentFilterTab);
         setFiltersList(
           <div>
-            <h3>Genres</h3>
+            <h3 className="dark:text-white">Genres</h3>
             <div className="flex flex-wrap">
             {genres.map(genre => {
               return <FilterListBtn key={genre.name} filterCategory={filterObj.fieldNameAPI[0]} filter={genre.name} />
             })}
             </div>
-            <h3>Themes</h3>
+            <h3 className="dark:text-white">Themes</h3>
             <div className="flex flex-wrap">
             {themes.map(theme => {
               return <FilterListBtn key={theme.name} filterCategory={filterObj.fieldNameAPI[1]} filter={theme.name} />
@@ -131,13 +131,13 @@ export default function FilterSection({ isSearch }) {
         const filterObj = FILTERS.find(f => f.filterTab === currentFilterTab);
         setFiltersList(
           <div>
-            <h3>Modes</h3>
+            <h3 className="dark:text-white">Modes</h3>
             <div className="flex flex-wrap">
             {modes.map(mode => {
               return <FilterListBtn key={mode.name} filterCategory={filterObj.fieldNameAPI[0]} filter={mode.name} />
             })}
             </div>
-            <h3>Perspective</h3>
+            <h3 className="dark:text-white">Perspective</h3>
             <div className="flex flex-wrap">
             {perspective.map(perspective => {
               return <FilterListBtn key={perspective.name} filterCategory={filterObj.fieldNameAPI[1]} filter={perspective.name} />
@@ -171,12 +171,12 @@ export default function FilterSection({ isSearch }) {
   return (
     <section>
       {/* Filter Tabs */}
-      <div className="flex justify-center my-2.5">
+      <div className="flex md:flex-row flex-col justify-center my-2.5">
         {FILTERS.map((filter, index) => {
           return <button key={filter.filterTab} className={`${filter.filterTab === currentFilterTab 
             ? 'bg-cyan-600/75 hover:bg-cyan-600/75'
             : 'bg-stone-500/75 hover:bg-stone-600/75'} 
-            ${index === 0 ? 'rounded-l' : ''} ${index === FILTERS.length - 1 ? 'rounded-r' : ''}
+            ${index === 0 ? 'md:rounded-l' : ''} ${index === FILTERS.length - 1 ? 'md:rounded-r' : ''}
             flex items-center text-sm text-white px-5 py-4`}
             onClick={changeCurrentTab}
             data-tab={filter.filterTab}

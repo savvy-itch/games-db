@@ -58,7 +58,7 @@ export default function Pagination2({ pages }) {
   return (
     <div className="flex justify-center mt-10">
       {/* Left navigation arrow */}
-      <button className="h-10 w-10 rounded-lg font-bold bg-sky-300/75 border border-sky-300/75 mx-1 transition-colors hover:bg-sky-400/75 hover:border-sky-400-75 hover:cursor-pointer focus:bg-sky-400/75 focus:border-sky-400-75 disabled:cursor-default disabled:bg-sky-300/75 disabled:text-slate-600" 
+      <button className="h-10 w-7 sm:w-10 rounded-lg font-bold bg-sky-300/75 border border-sky-300/75 mx-1 transition-colors hover:bg-sky-400/75 hover:border-sky-400-75 hover:cursor-pointer focus:bg-sky-400/75 focus:border-sky-400-75 disabled:cursor-default disabled:bg-sky-300/75 disabled:text-slate-600" 
         onClick={() => dispatch(onPrevPage())} 
         disabled={currentPage === 1}
       >
@@ -68,7 +68,7 @@ export default function Pagination2({ pages }) {
       {allPages.map((page, index) => {
         return (
         <button key={`${page}-${index}`} 
-          className={`h-10 w-10 rounded-lg font-bold bg-sky-300/75 border mx-1 transition-colors hover:bg-sky-400/75 hover:border-sky-400-75 hover:cursor-pointer focus:bg-sky-400/75 focus:border-sky-400-75 disabled:cursor-default disabled:bg-sky-300/75 disabled:text-slate-600 ${currentPage === page ? 'border-black' : 'border-sky-300/75'}`}
+          className={`h-10 w-7 sm:w-10 rounded-lg font-bold bg-sky-300/75 border mx-1 transition-colors hover:bg-sky-400/75 hover:border-sky-400-75 hover:cursor-pointer focus:bg-sky-400/75 focus:border-sky-400-75 disabled:cursor-default disabled:bg-sky-300/75 disabled:text-slate-600 ${currentPage === page ? 'border-black' : 'border-sky-300/75'}`}
           onClick={() => dispatch(onPageChange({ currentPage: page}))}
           disabled={page === '...'}
         >
@@ -78,7 +78,7 @@ export default function Pagination2({ pages }) {
       })}
       
       {/*  Right Navigation arrow */}
-      <button className="h-10 w-10 rounded-lg font-bold bg-sky-300/75 border border-sky-300/75 mx-1 transition-colors hover:bg-sky-400/75 hover:border-sky-400-75 hover:cursor-pointer focus:bg-sky-400/75 focus:border-sky-400-75 disabled:cursor-default disabled:bg-sky-300/75 disabled:text-slate-600"
+      <button className="h-10 w-7 sm:w-10 rounded-lg font-bold bg-sky-300/75 border border-sky-300/75 mx-1 transition-colors hover:bg-sky-400/75 hover:border-sky-400-75 hover:cursor-pointer focus:bg-sky-400/75 focus:border-sky-400-75 disabled:cursor-default disabled:bg-sky-300/75 disabled:text-slate-600"
         onClick={() => dispatch(onNextPage())}
         disabled={currentPage === pages}
       >

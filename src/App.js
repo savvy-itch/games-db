@@ -12,14 +12,17 @@ import { changeOrder, changeSortCategory } from './features/sorting/sortingSlice
 import FilterSection from './features/filters/FilterSection';
 import SortingBtns from './components/SortingBtns';
 import Error from './components/Error';
-import { unixToDate } from './helpers';
 import ThemeSwitch from './features/theme/ThemeSwitch';
 import { FaSearch } from "react-icons/fa";
+import { IoGameController } from 'react-icons/io5';
+import GameCard from './features/games/GameCard';
 
+// IoGameController
 
 // light/dark theme toggle
 // display search input below the filters
 // single game page
+// by default fetch games not older than 1993 
 // dropdown menu of matches on search input
 // add loaders between data fetching
 // remove filterCategory from an array when dispatcihng removeFilter if it ends up not needed
@@ -118,29 +121,8 @@ function App() {
     <>
       <FilterSection isSearch={isSearch} />
       <SortingBtns />
-      <div className="grid grid-cols-2 gap-7">
-        {paginatedGames.map((game) => {
-          return (
-            <div className="flex" key={game.id}>
-              <img className="aspect-square object-none w-1/5" src={game.cover?.url} alt={game.name} />
-              <div className="ml-2">
-                <p className="text-lg font-bold">{game.name}</p>
-                <p>Rating: {Math.round(game.total_rating)}/100</p>
-                <p className="text-sm text-slate-600">
-                  {game.platforms.map((platform, index) => {
-                    let name = '';
-                    name += platform.name;
-                    if (index < game.platforms.length - 1) {
-                      name += '/';
-                    }
-                    return name;
-                  })}
-                </p>
-                <p>{unixToDate(game.first_release_date)}</p>
-              </div>
-            </div>
-          );
-        })}
+      <div className="grid md:grid-cols-2 grid-cols-1 gap-7">
+        {paginatedGames.map(game => {return <GameCard key={game.id} game={game} />})}
       </div>
       <Pagination pages={Math.ceil(gamesState.gamesList?.length / pageSize)} />
     </>)
@@ -149,25 +131,33 @@ function App() {
     return <Error error={errorData.message} />;
   }
 
+// #2c3867 - light blue
+// #171e3a - dark blue
+// #ff0056 - pink
+
   return (
     <div className="App flex flex-col items-center bg-slate-100 dark:bg-slate-800 transition-colors box-border">
-      <div className="flex justify-between w-9/12 items-center">
-        <h1 className="text-orange-600 text-center text-4xl	font-bold">Games DB</h1>
-        <form className="flex my-3">
-          <input className="rounded-l-md border-l-2 border-t-2 border-b-2 border-stone-400 transition-colors px-2 py-1 outline-none focus:border-sky-500/75" type="text" 
-            value={searchInput} 
-            onChange={handleSearchInputChange} 
-            onSubmit={handleSearchSubmit}
-            placeholder="search" />
-          <button className="rounded-r-md bg-sky-500/75 text-white font-bold px-3 py-1 transition-colors flex items-center hover:bg-sky-600/75" 
-            onClick={handleSearchSubmit}
-          >
-            <FaSearch />
-          </button>
-        </form>
-        <ThemeSwitch />
+      <div className="flex flex-col sm:flex-row justify-between md:w-9/12 w-11/12 items-center my-4">
+        <h1 className="flex items-center text-orange-600 text-center text-4xl	font-bold">
+          Ga<IoGameController className="self-end" />es DB
+        </h1>
+        <div className="flex my-3 w-full sm:w-auto justify-between">
+          <form className="flex">
+            <input className="rounded-l-md border-l-2 border-t-2 border-b-2 border-stone-400 transition-colors px-2 py-1 outline-none focus:border-sky-500/75" type="text" 
+              value={searchInput} 
+              onChange={handleSearchInputChange} 
+              onSubmit={handleSearchSubmit}
+              placeholder="search" />
+            <button className="rounded-r-md bg-sky-500/75 text-white font-bold px-3 py-1 transition-colors flex items-center hover:bg-sky-600/75" 
+              onClick={handleSearchSubmit}
+            >
+              <FaSearch />
+            </button>
+          </form>
+          <ThemeSwitch />
+        </div>
       </div>
-      <div className="w-9/12 bg-slate-200 p-2 min-h-screen rounded">
+      <div className="md:w-9/12 bg-slate-200 dark:bg-slate-900 p-3 min-h-screen rounded">
         {content}
       </div>
     </div>

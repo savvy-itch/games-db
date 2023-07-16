@@ -74,15 +74,15 @@ export default function RatingRange() {
   }, [filtersState.selectedMinRating, filtersState.selectedMaxRating]);
 
   return (
-    <div className="w-8/12">
-      <div className="flex my-4">
+    <div className="md:w-8/12">
+      <div className="flex my-4 justify-between">
         <div className="flex flex-col">
-          <label htmlFor="min">Minimum Rating</label>
-          <input type="number" name="min" value={minRating} onChange={handleMinRatingChange} />    
+          <label htmlFor="min" className="dark:text-white">Minimum Rating</label>
+          <input className="p-1 my-2 w-4/12 sm:w-auto" type="number" name="min" value={minRating} onChange={handleMinRatingChange} />    
         </div>
         <div className="flex flex-col">
-          <label htmlFor="max">Maximum Rating</label>
-          <input type="number" name="max" value={maxRating} onChange={handleMaxRatingChange} />
+          <label htmlFor="max" className="dark:text-white">Maximum Rating</label>
+          <input className="p-1 my-2 w-4/12 sm:w-auto" type="number" name="max" value={maxRating} onChange={handleMaxRatingChange} />
         </div>
       </div>
       <div className="range-slider">

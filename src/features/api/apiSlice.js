@@ -28,7 +28,7 @@ export const apiSlice = createApi({
         url: '/games',
         method: 'POST',
         headers: HEADERS,
-        body: 'f name, cover.url, genres.name, themes.name, game_modes.name, player_perspectives.name, platforms.name, first_release_date, total_rating; w total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n; l 200;'
+        body: 'f name, cover.url, genres.name, themes.name, game_modes.name, player_perspectives.name, platforms.name, first_release_date, total_rating; w total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n & cover.width = 180; l 200;'
       }),
     }),
     getSearch: builder.query({
