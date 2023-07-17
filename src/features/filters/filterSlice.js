@@ -21,6 +21,9 @@ const filterSlice = createSlice({
       appliedFilters = [...state.selectedFilters].filter(sf => sf[1] !== selectedFilter[1]);
       return {...state, selectedFilters: appliedFilters}
     },
+    clearFilters() {
+      return {...initialState}
+    },
     updateMinRatingFilter(state, action) {
       return {...state, selectedMinRating: action.payload.selectedMinRating}
     },
@@ -30,5 +33,5 @@ const filterSlice = createSlice({
   }
 });
 
-export const { addFilter, removeFilter, updateMinRatingFilter, updateMaxRatingFilter } = filterSlice.actions;
+export const { addFilter, removeFilter, clearFilters, updateMinRatingFilter, updateMaxRatingFilter } = filterSlice.actions;
 export default filterSlice.reducer;

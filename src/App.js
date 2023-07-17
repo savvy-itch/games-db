@@ -13,16 +13,13 @@ import FilterSection from './features/filters/FilterSection';
 import SortingBtns from './components/SortingBtns';
 import Error from './components/Error';
 import ThemeSwitch from './features/theme/ThemeSwitch';
-import { FaSearch } from "react-icons/fa";
 import { IoGameController } from 'react-icons/io5';
 import GameCard from './features/games/GameCard';
-
-// IoGameController
+import SearchForm from './features/search/SearchForm';
+import { clearFilters } from './features/filters/filterSlice';
 
 // light/dark theme toggle
-// display search input below the filters
 // single game page
-// by default fetch games not older than 1993 
 // dropdown menu of matches on search input
 // add loaders between data fetching
 // remove filterCategory from an array when dispatcihng removeFilter if it ends up not needed
@@ -31,7 +28,6 @@ const pageSize = 10;
 
 function App() {
   const [paginatedGames, setPaginatedGames] = useState([]);
-  const [searchInput, setSearchInput] = useState('');
   // needed to determine when filtering whether new data should be fetched or not
   const [isSearch, setIsSearch] = useState(false);
   const pagination = useSelector(state => state.pagination);
@@ -93,18 +89,17 @@ function App() {
     }
   }, [gamesState.gamesList, pagination.currentPage]);
 
-  function handleSearchInputChange(e) {
-    setSearchInput(e.target.value);
-  }
-
-  function handleSearchSubmit(e) {
-    e.preventDefault();
+  function handleSearchSubmit(searchInput) {
     setIsSearch(true);
+    dispatch(clearFilters());
     trigger(searchInput);
     dispatch(onPageChange({ currentPage: 1 }));
-    setSearchInput('');
     dispatch(changeSortCategory({ sortBy: 'Rating' }));
     dispatch(changeOrder({ descendingOrder: true }));
+  }
+
+  function passHandleSearchSubmit(searchInput) {
+    handleSearchSubmit(searchInput);
   }
 
   let content;
@@ -131,10 +126,6 @@ function App() {
     return <Error error={errorData.message} />;
   }
 
-// #2c3867 - light blue
-// #171e3a - dark blue
-// #ff0056 - pink
-
   return (
     <div className="App flex flex-col items-center bg-slate-100 dark:bg-slate-800 transition-colors box-border">
       <div className="flex flex-col sm:flex-row justify-between md:w-9/12 w-11/12 items-center my-4">
@@ -142,18 +133,7 @@ function App() {
           Ga<IoGameController className="self-end" />es DB
         </h1>
         <div className="flex my-3 w-full sm:w-auto justify-between">
-          <form className="flex">
-            <input className="rounded-l-md border-l-2 border-t-2 border-b-2 border-stone-400 transition-colors px-2 py-1 outline-none focus:border-sky-500/75" type="text" 
-              value={searchInput} 
-              onChange={handleSearchInputChange} 
-              onSubmit={handleSearchSubmit}
-              placeholder="search" />
-            <button className="rounded-r-md bg-sky-500/75 text-white font-bold px-3 py-1 transition-colors flex items-center hover:bg-sky-600/75" 
-              onClick={handleSearchSubmit}
-            >
-              <FaSearch />
-            </button>
-          </form>
+          <SearchForm onSubmit={passHandleSearchSubmit} />
           <ThemeSwitch />
         </div>
       </div>

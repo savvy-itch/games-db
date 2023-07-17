@@ -15,7 +15,6 @@ export default function SortingBtns() {
   const dispatch = useDispatch();
 
   function handleSortCategoryChange(e) {
-    console.log(e.currentTarget);
     // if it's the same category, reverse sorting order
     if (e.currentTarget.dataset.category === sorting.sortBy) {
       dispatch(changeOrder({ descendingOrder: !sorting.descendingOrder }));  

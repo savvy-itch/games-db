@@ -8,6 +8,8 @@ const HEADERS = {
   'Authorization': 'Bearer uptot43uwwe8mp4c2ze30altqpkzbv',
 }
 
+const START_YEAR = 1993;
+
 function buildFiltersBody(filter) {
   let filtersBody = ''; 
   if (filter[0] === 'platforms' || filter[0] === 'genres' || filter[0] === 'themes' || filter[0] === 'game_modes' || filter[0] === 'player_perspectives') {
@@ -28,7 +30,8 @@ export const apiSlice = createApi({
         url: '/games',
         method: 'POST',
         headers: HEADERS,
-        body: 'f name, cover.url, genres.name, themes.name, game_modes.name, player_perspectives.name, platforms.name, first_release_date, total_rating; w total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n & cover.width = 180; l 200;'
+        body: `f name, cover.url, genres.name, themes.name, game_modes.name, player_perspectives.name, platforms.name, first_release_date, total_rating; 
+          w total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n & first_release_date > ${yearToUnix(START_YEAR, "start")}; l 200;`
       }),
     }),
     getSearch: builder.query({
@@ -36,7 +39,8 @@ export const apiSlice = createApi({
         url: '/search',
         method: 'POST',
         headers: HEADERS,
-        body: `search "${search}"; f game.name, game.cover.url, game.platforms.name, game.first_release_date, game.total_rating; w game.total_rating != n & game.cover != n & game.parent_game = n & game.version_parent = n & game.first_release_date != n; l 200;`
+        body: `search "${search}"; f game.name, game.cover.url, game.platforms.name, game.first_release_date, game.total_rating; 
+          w game.total_rating != n & game.cover != n & game.parent_game = n & game.version_parent = n & game.first_release_date != n; l 200;`
       })
     }),
     getGenres: builder.query({

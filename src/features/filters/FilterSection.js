@@ -153,17 +153,20 @@ export default function FilterSection({ isSearch }) {
   }, [currentFilterTab, genres, genresError, genresLoading, themes, themesError, modes, modesError, modesLoading, perspective, perspectiveError, perspectiveLoading, themesLoading]);
 
   useEffect(() => {
-    // if search results need to be filtered
-    if (isSearch) {
-      // filter already fetched games
-      dispatch(filterGames({ filters: filtersState.selectedFilters, minRating: filtersState.selectedMinRating, maxRating: filtersState.selectedMaxRating }));
-    } else {
-      // if default games need to be filtered
-      // fetch games with selected filters
-      trigger(filtersState);
-      if (searchResult) {
-        dispatch(setFetchedGames({ fetchedGamesList: searchResult}));
-        dispatch(setGames({ gamesList: searchResult}));
+    // check if any filters have been applied
+    if (filtersState.selectedFilters.length > 0 || filtersState.selectedMinRating !== '' || filtersState.selectedMaxRating !== '') {
+      // if search results need to be filtered
+      if (isSearch) {
+        // filter already fetched games
+        dispatch(filterGames({ filters: filtersState.selectedFilters, minRating: filtersState.selectedMinRating, maxRating: filtersState.selectedMaxRating }));
+      } else {
+        // if default games need to be filtered
+        // fetch games with selected filters
+        trigger(filtersState);
+        if (searchResult) {
+          dispatch(setFetchedGames({ fetchedGamesList: searchResult}));
+          dispatch(setGames({ gamesList: searchResult}));
+        }
       }
     }
   }, [dispatch, filtersState, isSearch, trigger, searchResult]);
