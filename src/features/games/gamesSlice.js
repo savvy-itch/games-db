@@ -6,6 +6,7 @@ const initialState = {
   fetchedGamesList: [],
   // make a copy to filter/sort
   gamesList: [],
+  isSearch: false
 };
 
 const gamesSlice = createSlice({
@@ -17,6 +18,9 @@ const gamesSlice = createSlice({
     },
     setGames(state, action) {
       return {...state, gamesList: action.payload.gamesList}
+    },
+    setIsSearch(state, action) {
+      return {...state, isSearch: action.payload.isSearch}
     },
     sortByDefault(state) {
       // sort in descending order
@@ -72,5 +76,5 @@ const gamesSlice = createSlice({
   }
 })
 
-export const { setFetchedGames, setGames, sortByDefault, sortByCategory, filterGames } = gamesSlice.actions;
+export const { setFetchedGames, setGames, setIsSearch, sortByDefault, sortByCategory, filterGames } = gamesSlice.actions;
 export default gamesSlice.reducer;

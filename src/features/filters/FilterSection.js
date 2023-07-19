@@ -36,10 +36,11 @@ const FILTERS = [
   },
 ]
 
-export default function FilterSection({ isSearch }) {
+export default function FilterSection() {
   const [currentFilterTab, setCurrentFilterTab] = useState(FILTERS[0].filterTab);
   const [filtersList, setFiltersList] = useState([]);
   const filtersState = useSelector(state => state.filters);
+  const gamesState = useSelector(state => state.games);
   const dispatch = useDispatch();
 
   // genre filters query
@@ -156,7 +157,7 @@ export default function FilterSection({ isSearch }) {
     // check if any filters have been applied
     if (filtersState.selectedFilters.length > 0 || filtersState.selectedMinRating !== '' || filtersState.selectedMaxRating !== '') {
       // if search results need to be filtered
-      if (isSearch) {
+      if (gamesState.isSearch) {
         // filter already fetched games
         dispatch(filterGames({ filters: filtersState.selectedFilters, minRating: filtersState.selectedMinRating, maxRating: filtersState.selectedMaxRating }));
       } else {
@@ -169,7 +170,7 @@ export default function FilterSection({ isSearch }) {
         }
       }
     }
-  }, [dispatch, filtersState, isSearch, trigger, searchResult]);
+  }, [dispatch, filtersState, gamesState.isSearch, trigger, searchResult]);
 
   return (
     <section>

@@ -92,7 +92,15 @@ export const apiSlice = createApi({
         ; l 200;`
       })
     }),
+    getGameDetails: builder.query({
+      query: (gameId) => ({
+        url: '/games',
+        method: 'POST',
+        headers: HEADERS,
+        body: `f name, cover.url, first_release_date, total_rating, genres.name, platforms.name, summary, themes.name, companies.name, game_modes.name; w id = ${gameId}`
+      })
+    })
   })
 })
 
-export const { useGetGamesQuery, useLazyGetSearchQuery, useGetGenresQuery, useGetThemesQuery, useGetModesQuery, useGetPerspectiveQuery, useLazyGetFilteredResultsQuery } = apiSlice;
+export const { useGetGamesQuery, useLazyGetSearchQuery, useGetGenresQuery, useGetThemesQuery, useGetModesQuery, useGetPerspectiveQuery, useLazyGetFilteredResultsQuery, useGetGameDetailsQuery } = apiSlice;
