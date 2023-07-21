@@ -53,7 +53,7 @@ export default function Navbar() {
       <div className="flex flex-col sm:flex-row justify-between md:w-9/12 w-11/12 items-center">
         <Link to="/">
           <h1 className="flex items-center text-orange-600 text-center text-4xl	font-bold">
-            Ga<IoGameController className="self-end" />es DB
+            Ga<IoGameController className="self-end" />es Vault
           </h1>
         </Link>
         <div className="flex my-3 w-full sm:w-auto justify-between">

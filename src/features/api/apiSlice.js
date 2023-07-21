@@ -31,7 +31,8 @@ export const apiSlice = createApi({
         method: 'POST',
         headers: HEADERS,
         body: `f name, cover.url, genres.name, themes.name, game_modes.name, player_perspectives.name, platforms.name, first_release_date, total_rating; 
-          w total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n & first_release_date > ${yearToUnix(START_YEAR, "start")}; l 200;`
+          w total_rating != n & cover != n & themes != n & parent_game = n & version_parent = n & first_release_date != n & first_release_date > ${yearToUnix(START_YEAR, "start")}; 
+          l 200;`
       }),
     }),
     getSearch: builder.query({
@@ -97,7 +98,7 @@ export const apiSlice = createApi({
         url: '/games',
         method: 'POST',
         headers: HEADERS,
-        body: `f name, cover.url, first_release_date, total_rating, genres.name, platforms.name, summary, themes.name, companies.name, game_modes.name; w id = ${gameId}`
+        body: `f name, cover.url, cover.image_id, first_release_date, total_rating, genres.name, platforms.name, summary, themes.name, involved_companies.company.name, game_modes.name; w id = ${gameId};`
       })
     })
   })

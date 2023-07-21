@@ -11,6 +11,8 @@ import Navbar from './components/Navbar';
 // dropdown menu of matches on search input
 // add loaders between data fetching
 // remove filterCategory from an array when dispatching removeFilter if it ends up not needed
+// on Home page click clear search input
+// change name to Games Vault
 
 function App() {
   return (

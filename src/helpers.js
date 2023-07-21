@@ -14,3 +14,9 @@ export function yearToUnix(year, condition) {
   }
   return unixDate;
 }
+
+export function unixToFullDate(timestamp) {
+  const date = new Date(timestamp * 1000);
+  const formattedDate = date.toLocaleString("en-US", {day: 'numeric', month: 'long', year: "numeric"});
+  return formattedDate;
+}
