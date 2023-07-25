@@ -3,6 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import './RatingRange.css';
 import { updateMinRatingFilter, updateMaxRatingFilter } from './filterSlice';
 
+// BUGS
+// when min rating field is empty, the slider moves to the middle
+// cannot enter numbers into max rating
+// when games with set rating have been fetched, they're not sorted properly
+ 
+
 const rangeMin = 0;
 const rangeMax = 100;
 

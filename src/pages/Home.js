@@ -90,7 +90,7 @@ function Home() {
   }
 
   return (
-    <div className="App flex flex-col items-center box-border">
+    <div className="App flex flex-col items-center box-border bg-slate-100 dark:bg-slate-800 transition-colors">
       <div className="md:w-9/12 bg-slate-200 dark:bg-slate-900 p-3 min-h-screen rounded">
         {content}
       </div>

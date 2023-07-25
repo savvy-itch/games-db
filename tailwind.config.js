@@ -8,10 +8,9 @@ module.exports = {
     extend: {
       boxSizing: ['border-box'],
     },
-  },
-  corePlugins: {
-    boxSizing: false,
-  },
-  plugins: [],
+    corePlugins: {
+      boxSizing: false,
+    },
+    plugins: [],
+  }
 }
-

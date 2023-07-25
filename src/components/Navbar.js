@@ -49,7 +49,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="flex justify-center py-4">
+    <div className="flex justify-center py-4 bg-slate-100 dark:bg-slate-800 transition-colors">
       <div className="flex flex-col sm:flex-row justify-between md:w-9/12 w-11/12 items-center">
         <Link to="/">
           <h1 className="flex items-center text-orange-600 text-center text-4xl	font-bold">

@@ -8,6 +8,8 @@ const HEADERS = {
   'Authorization': 'Bearer uptot43uwwe8mp4c2ze30altqpkzbv',
 }
 
+// maybe add more conditions to /games so that games with absent keys don't show in results
+
 const START_YEAR = 1993;
 
 function buildFiltersBody(filter) {
@@ -31,7 +33,7 @@ export const apiSlice = createApi({
         method: 'POST',
         headers: HEADERS,
         body: `f name, cover.url, genres.name, themes.name, game_modes.name, player_perspectives.name, platforms.name, first_release_date, total_rating; 
-          w total_rating != n & cover != n & themes != n & parent_game = n & version_parent = n & first_release_date != n & first_release_date > ${yearToUnix(START_YEAR, "start")}; 
+          w cover != n & genres != n & themes != n & parent_game = n & version_parent = n & first_release_date != n & total_rating != n & first_release_date > ${yearToUnix(START_YEAR, "start")}; 
           l 200;`
       }),
     }),
@@ -82,7 +84,7 @@ export const apiSlice = createApi({
         url: '/games',
         method: 'POST',
         headers: HEADERS,
-        body: `f name, cover.url, platforms.name, first_release_date, total_rating; w total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n 
+        body: `f name, cover.url, platforms.name, first_release_date, total_rating; w genres != n & themes != n & total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n 
         ${filters.selectedFilters.map(filter => {return `${buildFiltersBody(filter)}`}).join('')}
         ${filters.selectedMinRating > 0
         ? `& total_rating > ${filters.selectedMinRating}`
