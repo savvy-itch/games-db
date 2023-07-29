@@ -6,6 +6,10 @@ import Loading from '../components/Loading';
 import { unixToFullDate } from '../helpers';
 import RatingDisplay from '../components/RatingDisplay';
 
+// add developer/publisher
+// add trailers/screenshots carousel;
+// add similar games
+
 export default function GameDetails() {
   const { id } = useParams();
 
@@ -40,18 +44,18 @@ export default function GameDetails() {
                 <p className="dark:text-white">{game[0].summary}</p>
               </div>
               <div className="flex items-center my-3">
-                <h2 className="dark:text-white text-lg font-bold mr-5">Release Date</h2>
+                <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Release Date</h2>
                 <p className="dark:text-white">{unixToFullDate(game[0].first_release_date)}</p>
               </div>
               <div className="flex items-center my-3">
-                <h2 className="dark:text-white text-lg font-bold mr-5">Platforms</h2>
+                <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Platforms</h2>
                 <p className="dark:text-white">{game[0].platforms.map((platform, index) => {
                   const comma = index !== game[0].platforms.length - 1 ? ', ' : '';
                   return platform.name + comma;
                 })}</p>
               </div>
               <div className="flex items-center my-3">
-                <h2 className="dark:text-white text-lg font-bold mr-5">Genre</h2>
+                <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Genre</h2>
                 <p className="dark:text-white">{game[0].genres.map((genre, index) => {
                   const comma = index !== game[0].genres.length - 1 ? ', ' : '';
                   return genre.name + comma;
@@ -59,7 +63,7 @@ export default function GameDetails() {
               </div>
               {game[0].themes &&
                 <div className="flex items-center my-3">
-                  <h2 className="dark:text-white text-lg font-bold mr-5">Themes</h2>
+                  <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Themes</h2>
                   <p className="dark:text-white">{game[0].themes.map((theme, index) => {
                     const comma = index !== game[0].themes.length - 1 ? ', ' : '';
                     return theme.name + comma;
@@ -67,7 +71,7 @@ export default function GameDetails() {
                 </div>
               }
               <div className="flex items-center my-3">
-                <h2 className="dark:text-white text-lg font-bold mr-5">Game Modes</h2>
+                <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Game Modes</h2>
                 <p className="dark:text-white">{game[0].game_modes.map((mode, index) => {
                   const comma = index !== game[0].game_modes.length - 1 ? ', ' : '';
                   return mode.name + comma;
