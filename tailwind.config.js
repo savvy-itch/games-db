@@ -5,6 +5,9 @@ module.exports = {
   ],
   darkMode: "class",
   theme: {
+    minWidth: {
+      '2/5': '40%',
+    },
     extend: {
       boxSizing: ['border-box'],
     },

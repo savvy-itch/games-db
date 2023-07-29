@@ -4,10 +4,7 @@ import './RatingRange.css';
 import { updateMinRatingFilter, updateMaxRatingFilter } from './filterSlice';
 
 // BUGS
-// when min rating field is empty, the slider moves to the middle
-// cannot enter numbers into max rating
 // when games with set rating have been fetched, they're not sorted properly
- 
 
 const rangeMin = 0;
 const rangeMax = 100;
@@ -15,81 +12,122 @@ const rangeMax = 100;
 export default function RatingRange() {
   const [minRating, setMinRating] = useState(0);
   const [maxRating, setMaxRating] = useState(100);
+  const [isMinValid, setIsMinValid] = useState(true);
+  const [isMaxValid, setIsMaxValid] = useState(true);
+  const [isRatingDisabled, setIsRatingDisabled] = useState(false);
   const rangeRef = useRef(null);
   const filtersState = useSelector(state => state.filters);
   const dispatch = useDispatch();
 
   function handleMinRatingChange(e) {
-    if (maxRating - minRating < rangeMin) {
-      setMinRating(maxRating - rangeMin);
-      dispatch(updateMinRatingFilter({ selectedMinRating: (maxRating - rangeMin) }));
-    } else {
-      setMinRating(e.target.value);
-      rangeRef.current.style.left = (e.target.value / 100) * 100 + "%";
-      dispatch(updateMinRatingFilter({ selectedMinRating: e.target.value }));
-    }
+    const intValue = parseInt(e.target.value);
     // if min rating is too close to max rating
-    if (e.target.value >= maxRating - 10) {
+    if (intValue > maxRating - 10) {
       setMinRating(maxRating - 10);
       rangeRef.current.style.left = ((maxRating - 10) / 100) * 100 + "%";
-      dispatch(updateMinRatingFilter({ selectedMinRating: (maxRating - 10) }));
-    }
-    if (e.target.value < rangeMin) {
+    } else if (intValue <= rangeMin) {
       setMinRating(rangeMin);
-      dispatch(updateMinRatingFilter({ selectedMinRating: '' }));
-    }
-    // remove AppliedFilterBtn when it's 0
-    // eslint-disable-next-line eqeqeq
-    if (e.target.value == 0) {
-      dispatch(updateMinRatingFilter({ selectedMinRating: '' }));
+    } else {
+      setMinRating(intValue);
+      rangeRef.current.style.left = (intValue / 100) * 100 + "%";
     }
   }
 
   function handleMaxRatingChange(e) {
+    const intValue = parseInt(e.target.value);
     // if max rating is too close to min rating
-    if (e.target.value < parseInt(minRating) + 10) {
+    if (intValue < parseInt(minRating) + 10) {
       setMaxRating(parseInt(minRating) + 10);
       rangeRef.current.style.right = 100 - ((parseInt(minRating) + 10) / 100) * 100 + "%";
-      dispatch(updateMaxRatingFilter({ selectedMaxRating: parseInt(minRating) + 10 }));
-    } else {
-      setMaxRating(e.target.value);
-      rangeRef.current.style.right = 100 - (e.target.value / 100) * 100 + "%";
-      dispatch(updateMaxRatingFilter({ selectedMaxRating: e.target.value }));
-    }
-    if (e.target.value > rangeMax) {
+    } else if (intValue >= rangeMax) {
       setMaxRating(rangeMax);
-      dispatch(updateMaxRatingFilter({ selectedMaxRating: '' }));
-    }
-    // remove AppliedFilterBtn when it's 100
-    // eslint-disable-next-line eqeqeq
-    if (e.target.value == 100) {
-      dispatch(updateMaxRatingFilter({ selectedMaxRating: '' }));
+    } else {
+      setMaxRating(intValue);
+      rangeRef.current.style.right = 100 - (intValue / 100) * 100 + "%";
     }
   }
 
-  // when AppliedFilterBtn for rating is removed, set the rating to default
+  function handleMinRatingInputChange(e) {
+    // numeric values starting with 0 that aren't just 0, e.g. "01"
+    const zeroes = /^(?=.*\b00)[0-9]*$/;
+    // if input includes non-numeric characters OR 0 at the beginning OR no value OR greater than max rating - 10 
+    if (/\D/.test(e.target.value) || zeroes.test(e.target.value) 
+      || e.target.value === '' || e.target.value > maxRating - 10) {
+      setIsMinValid(false);
+      setMinRating(e.target.value);
+    } else {
+      setIsMinValid(true);
+      const intValue = parseInt(e.target.value);
+      if (intValue >= rangeMax || intValue <= rangeMin) {
+        setMinRating(rangeMin);
+        rangeRef.current.style.left = "0";
+      } else {
+        setMinRating(intValue);
+        rangeRef.current.style.left = (intValue / 100) * 100 + "%";
+      }
+    }
+  }
+
+  function handleMaxRatingInputChange(e) {
+    // non-numeric values or numbers starting with 0
+    const zeroes = /^(?=.*\b0)[0-9]*$/;
+    // if input includes non-numeric characters OR 0 at the beginning OR no value OR less than min rating + 10 
+    if (/\D/.test(e.target.value) || zeroes.test(e.target.value) 
+      || e.target.value === '' || e.target.value < minRating + 10) {
+      setIsMaxValid(false);
+      setMaxRating(e.target.value);
+    } else {
+      setIsMaxValid(true);
+      const intValue = parseInt(e.target.value);
+      if (intValue >= rangeMax) {
+        setMaxRating(rangeMax);
+        rangeRef.current.style.right = "0";
+      } else {
+        setMaxRating(intValue);
+        rangeRef.current.style.right = 100 - (intValue / 100) * 100 + "%";
+      }
+    }
+  }
+
+  function updateRatings() {
+    dispatch(updateMaxRatingFilter({ selectedMaxRating: maxRating }));
+    dispatch(updateMinRatingFilter({ selectedMinRating: minRating }));
+  }
+
+  // disable the button for invalid rating values
   useEffect(() => {
-    if (filtersState.selectedMinRating === '') {
-      setMinRating(rangeMin);
-      rangeRef.current.style.left = "0";
+    if (!isMaxValid || !isMinValid) {
+      setIsRatingDisabled(true);
+    } else {
+      setIsRatingDisabled(false);
     }
-    if (filtersState.selectedMaxRating === '') {
-      setMaxRating(rangeMax);
-      rangeRef.current.style.right = "0";
+  }, [isMaxValid, isMinValid]);
+
+  useEffect(() => {
+    if (filtersState.selectedMinRating !== minRating) {
+      setMinRating(filtersState.selectedMinRating);
     }
-  }, [filtersState.selectedMinRating, filtersState.selectedMaxRating]);
+    if (filtersState.selectedMaxRating !== maxRating) {
+      setMaxRating(filtersState.selectedMaxRating);
+    }
+  }, [filtersState.selectedMinRating, filtersState.selectedMaxRating])
 
   return (
     <div className="md:w-8/12">
-      <div className="flex my-4 justify-between">
+      <div className="flex my-4 justify-between items-center">
         <div className="flex flex-col">
           <label htmlFor="min" className="dark:text-white">Minimum Rating</label>
-          <input className="p-1 my-2 w-4/12 sm:w-auto" type="number" name="min" value={minRating} onChange={handleMinRatingChange} />    
+          <input className={`p-1 my-2 w-4/12 sm:w-auto border-solid border-2 rounded ${isMinValid ? 'border-slate-600' : 'border-red-600'}`} type="text" name="min" 
+            value={minRating} 
+            onChange={handleMinRatingInputChange} />    
         </div>
         <div className="flex flex-col">
           <label htmlFor="max" className="dark:text-white">Maximum Rating</label>
-          <input className="p-1 my-2 w-4/12 sm:w-auto" type="number" name="max" value={maxRating} onChange={handleMaxRatingChange} />
+          <input className={`p-1 my-2 w-4/12 sm:w-auto border-solid border-2 rounded ${isMaxValid ? 'border-slate-600' : 'border-red-600'}`} type="text" name="max" 
+            value={maxRating} 
+            onChange={handleMaxRatingInputChange} />
         </div>
+        <button className={`p-3 rounded bg-slate-100 ${isRatingDisabled ? 'text-gray-500': ''}`} onClick={updateRatings} disabled={isRatingDisabled}>OK</button>
       </div>
       <div className="range-slider">
         <span ref={rangeRef} className="range-selected"></span>

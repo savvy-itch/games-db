@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { useLazyGetSearchQuery } from '../features/api/apiSlice';
-import { setFetchedGames, setGames, setIsSearch } from '../features/games/gamesSlice';
-import { sortByDefault } from '../features/games/gamesSlice';
+import { setFetchedGames, setGames, setIsSearch, sortByCategory } from '../features/games/gamesSlice';
 import { clearFilters } from '../features/filters/filterSlice';
 import { onPageChange } from '../features/pagination/paginationSlice';
-import { changeSortCategory, changeOrder } from '../features/sorting/sortingSlice';
-import { useDispatch } from 'react-redux';
+// import { changeSortCategory, changeOrder } from '../features/sorting/sortingSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Link, useNavigate, } from 'react-router-dom';
 import { IoGameController } from 'react-icons/io5';
@@ -13,6 +12,7 @@ import SearchForm from '../features/search/SearchForm';
 import ThemeSwitch from '../features/theme/ThemeSwitch';
 
 export default function Navbar() {
+  const sorting = useSelector(state => state.sorting);
   const dispatch = useDispatch();
   let navigate = useNavigate();
 
@@ -27,20 +27,21 @@ export default function Navbar() {
   useEffect(() => {
     if (searchResult) {
       const nestedSearchResults = searchResult.map(obj => obj.game);
+      console.log(nestedSearchResults);
       // store fetched games
       dispatch(setFetchedGames({ fetchedGamesList: nestedSearchResults}));
       dispatch(setGames({ gamesList: nestedSearchResults}));
-      dispatch(sortByDefault());
+      dispatch(sortByCategory({ sortBy: sorting.sortBy, descendingOrder: sorting.descendingOrder }));
     }
-  }, [searchResult, dispatch]);
+  }, [searchResult, dispatch, sorting]);
 
   function handleSearchSubmit(searchInput) {
     dispatch(setIsSearch({isSearch: true}));
     dispatch(clearFilters()); 
     trigger(searchInput);
     dispatch(onPageChange({ currentPage: 1 }));
-    dispatch(changeSortCategory({ sortBy: 'Rating' }));
-    dispatch(changeOrder({ descendingOrder: true }));
+    // dispatch(changeSortCategory({ sortBy: 'Rating' }));
+    // dispatch(changeOrder({ descendingOrder: true }));
     navigate('/'); // redirect to the home page 
   }
 

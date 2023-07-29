@@ -13,7 +13,6 @@ import SortingBtns from '../components/SortingBtns';
 import Error from '../components/Error';
 import GameCard from '../features/games/GameCard';
 
-// light/dark theme toggle
 // single game page
 // dropdown menu of matches on search input
 // add loaders between data fetching

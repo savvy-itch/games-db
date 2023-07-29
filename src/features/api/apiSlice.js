@@ -22,6 +22,19 @@ function buildFiltersBody(filter) {
   return filtersBody;
 }
 
+// getGames:
+// `f name, cover.url, genres.name, themes.name, game_modes.name, player_perspectives.name, platforms.name, first_release_date, total_rating; 
+// w cover != n & genres != n & themes != n & parent_game = n & version_parent = n & first_release_date != n & total_rating != n & first_release_date > ${yearToUnix(START_YEAR, "start")}; 
+// l 200;`
+
+// getSearch:
+// `search "${search}"; f game.name, game.cover.url, game.platforms.name, game.first_release_date, game.total_rating; 
+//  w game.total_rating != n & game.cover != n & game.parent_game = n & game.version_parent = n & game.first_release_date != n; l 200;`
+
+// `search "${search}"; f name, cover.url, platforms.name, first_release_date, total_rating; 
+//           w total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n; l 200;`
+
+
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: url }),
@@ -32,8 +45,8 @@ export const apiSlice = createApi({
         url: '/games',
         method: 'POST',
         headers: HEADERS,
-        body: `f name, cover.url, genres.name, themes.name, game_modes.name, player_perspectives.name, platforms.name, first_release_date, total_rating; 
-          w cover != n & genres != n & themes != n & parent_game = n & version_parent = n & first_release_date != n & total_rating != n & first_release_date > ${yearToUnix(START_YEAR, "start")}; 
+        body: `f name, cover.url, platforms.name, first_release_date, total_rating; 
+          w cover != n & genres != n & themes != n & total_rating != n & parent_game = n & version_parent = n & first_release_date != n & first_release_date > ${yearToUnix(START_YEAR, "start")}; 
           l 200;`
       }),
     }),
@@ -78,21 +91,21 @@ export const apiSlice = createApi({
         body: 'f name; l 20;'
       })
     }),
-    // create conditional body for different filters
     getFilteredResults: builder.query({
       query: (filters) => ({
         url: '/games',
         method: 'POST',
         headers: HEADERS,
-        body: `f name, cover.url, platforms.name, first_release_date, total_rating; w genres != n & themes != n & total_rating != n & cover != n & parent_game = n & version_parent = n & first_release_date != n 
+        body: `f name, cover.url, platforms.name, first_release_date, total_rating; 
+          w cover != n & genres != n & themes != n & total_rating != n & parent_game = n & version_parent = n & first_release_date != n & first_release_date > ${yearToUnix(START_YEAR, "start")} 
         ${filters.selectedFilters.map(filter => {return `${buildFiltersBody(filter)}`}).join('')}
         ${filters.selectedMinRating > 0
         ? `& total_rating > ${filters.selectedMinRating}`
         : ''}
-        ${filters.selectedMaxRating > 0
+        ${filters.selectedMaxRating < 100
         ? `& total_rating < ${filters.selectedMaxRating}`
-        : ''}
-        ; l 200;`
+        : ''}; 
+        l 200;`
       })
     }),
     getGameDetails: builder.query({

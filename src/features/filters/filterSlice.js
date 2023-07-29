@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   selectedFilters: [],
-  selectedMinRating: '',
-  selectedMaxRating: ''
+  selectedMinRating: 0,
+  selectedMaxRating: 100
 };
 
 const filterSlice = createSlice({

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetGenresQuery, useGetThemesQuery, useGetModesQuery, useGetPerspectiveQuery, useLazyGetFilteredResultsQuery } from '../api/apiSlice';
-import { filterGames } from '../games/gamesSlice';
+import { filterGames, sortByCategory } from '../games/gamesSlice';
 import { setGames, setFetchedGames } from '../games/gamesSlice';
 import FilterListBtn from './FilterListBtn';
 import RatingRange from './RatingRange';
@@ -41,6 +41,7 @@ export default function FilterSection() {
   const [filtersList, setFiltersList] = useState([]);
   const filtersState = useSelector(state => state.filters);
   const gamesState = useSelector(state => state.games);
+  const sorting = useSelector(state => state.sorting);
   const dispatch = useDispatch();
 
   // genre filters query
@@ -154,23 +155,26 @@ export default function FilterSection() {
   }, [currentFilterTab, genres, genresError, genresLoading, themes, themesError, modes, modesError, modesLoading, perspective, perspectiveError, perspectiveLoading, themesLoading]);
 
   useEffect(() => {
-    // check if any filters have been applied
-    if (filtersState.selectedFilters.length > 0 || filtersState.selectedMinRating !== '' || filtersState.selectedMaxRating !== '') {
-      // if search results need to be filtered
-      if (gamesState.isSearch) {
-        // filter already fetched games
-        dispatch(filterGames({ filters: filtersState.selectedFilters, minRating: filtersState.selectedMinRating, maxRating: filtersState.selectedMaxRating }));
-      } else {
-        // if default games need to be filtered
-        // fetch games with selected filters
-        trigger(filtersState);
-        if (searchResult) {
-          dispatch(setFetchedGames({ fetchedGamesList: searchResult}));
-          dispatch(setGames({ gamesList: searchResult}));
-        }
-      }
+    // if search results need to be filtered
+    if (gamesState.isSearch) {
+      // filter already fetched games
+      dispatch(filterGames({ filters: filtersState.selectedFilters, minRating: filtersState.selectedMinRating, maxRating: filtersState.selectedMaxRating }));
+    } else {
+    // if default games need to be filtered, fetch games with selected filters
+      console.log('trigger')
+      trigger(filtersState);
     }
-  }, [dispatch, filtersState, gamesState.isSearch, trigger, searchResult]);
+  }, [dispatch, filtersState, gamesState.isSearch, trigger]);
+
+  useEffect(() => {
+    if (searchResult && !gamesState.isSearch) {
+      // if new games have been fetched, update the page
+      console.log('dispatch')
+      dispatch(setFetchedGames({ fetchedGamesList: searchResult}));
+      dispatch(setGames({ gamesList: searchResult}));
+      dispatch(sortByCategory({ sortBy: sorting.sortBy, descendingOrder: sorting.descendingOrder }));
+    }
+  }, [searchResult, dispatch, gamesState.fetchedGamesList, sorting, gamesState.isSearch]);
 
   return (
     <section>
@@ -196,10 +200,10 @@ export default function FilterSection() {
       {/* Applied filters */}
       <div className="flex flex-wrap my-5">
         {filtersState.selectedFilters.map(filter => {
-          return <AppliedFilterBtn key={filter[1]} filterCategory={filter[0]} filter={filter[1]} />
+          return <AppliedFilterBtn key={filter[1]} filterCategory={filter[0]} filter={filter[1]} triggerFn={trigger} />
         })}
-        {filtersState.selectedMinRating !== '' && <AppliedFilterBtn minRating={filtersState.selectedMinRating} />}
-        {filtersState.selectedMaxRating !== '' && <AppliedFilterBtn maxRating={filtersState.selectedMaxRating} />}
+        {filtersState.selectedMinRating !== 0 && <AppliedFilterBtn triggerFn={trigger} />}
+        {filtersState.selectedMaxRating !== 100 && <AppliedFilterBtn triggerFn={trigger} />}
       </div>
     </section>
   )
