@@ -24,9 +24,8 @@ function setRatingColor(rating) {
     return "#669e01";
   } else if (rating > 70 && rating <= 89) {
     return "#41af10";
-  } else {
-    return "#10af65";
-  }
+  } 
+  return "#10af65";
 }
 
 const progress = keyframes`

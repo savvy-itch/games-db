@@ -113,7 +113,7 @@ export const apiSlice = createApi({
         url: '/games',
         method: 'POST',
         headers: HEADERS,
-        body: `f name, cover.url, cover.image_id, first_release_date, total_rating, genres.name, platforms.name, summary, themes.name, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, game_modes.name, screenshots.image_id, similar_games.name, similar_games.cover.image_id; w id = ${gameId};`
+        body: `f name, cover.url, cover.image_id, first_release_date, total_rating, genres.name, platforms.name, summary, themes.name, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, game_modes.name, player_perspectives.name, screenshots.image_id, similar_games.name, similar_games.cover.image_id; w id = ${gameId};`
       })
     })
   })

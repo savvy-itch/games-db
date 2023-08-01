@@ -1,6 +1,3 @@
-- filter & cancel filters (fetch data if needed);
-  - rating filter
-- add color theme toggle;
 - dropdown menu of matches on search input
 - add loaders between data fetching
 - add games to played list;

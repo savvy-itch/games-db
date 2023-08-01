@@ -161,7 +161,6 @@ export default function FilterSection() {
       dispatch(filterGames({ filters: filtersState.selectedFilters, minRating: filtersState.selectedMinRating, maxRating: filtersState.selectedMaxRating }));
     } else {
     // if default games need to be filtered, fetch games with selected filters
-      console.log('trigger')
       trigger(filtersState);
     }
   }, [dispatch, filtersState, gamesState.isSearch, trigger]);
@@ -169,7 +168,6 @@ export default function FilterSection() {
   useEffect(() => {
     if (searchResult && !gamesState.isSearch) {
       // if new games have been fetched, update the page
-      console.log('dispatch')
       dispatch(setFetchedGames({ fetchedGamesList: searchResult}));
       dispatch(setGames({ gamesList: searchResult}));
       dispatch(sortByCategory({ sortBy: sorting.sortBy, descendingOrder: sorting.descendingOrder }));

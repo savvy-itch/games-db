@@ -4,24 +4,35 @@ import { useGetGameDetailsQuery } from '../features/api/apiSlice';
 
 import Error from '../components/Error';
 import Loading from '../components/Loading';
-import { unixToFullDate } from '../helpers';
+import GameDetailsPara from '../components/GameDetailsPara';
 import RatingDisplay from '../components/RatingDisplay';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { styled } from 'styled-components';
+import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from "react-icons/bs";
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 
-// add trailers/screenshots carousel;
-// add similar games
+function PrevArrow(props) {
+  const { onClick } = props;
+  return (
+  <div className="absolute top-0 bottom-0 left-0 flex justify-center items-center p-3 z-20 bg-gradient-to-l from-transparent to-white"
+  >
+    <BsArrowLeftCircleFill className="w-12 h-12 opacity-70 hover:opacity-100 cursor-pointer" onClick={onClick} />
+  </div>)
+}
 
-const SimilarGameCard = styled.div`
-  background-image: url("https://images.igdb.com/igdb/image/upload/t_cover_big/${props => props.$cover.image_id}.jpg");
-`
+function NextArrow(props) {
+  const { onClick } = props;
+  return (
+  <div className="absolute top-0 bottom-0 right-0 flex justify-center items-center p-3 z-20 bg-gradient-to-r from-transparent to-white"
+  >
+    <BsArrowRightCircleFill className="w-12 h-12 opacity-70 hover:opacity-100 cursor-pointer" onClick={onClick} />
+  </div>)
+}
 
 export default function GameDetails() {
   const { id } = useParams();
-
-// https://images.igdb.com/igdb/image/upload/t_cover_big_2x/co209j.jpg
-// https://images.igdb.com/igdb/image/upload/t_screenshot_big/dtlqztoznyrxbvaj8u0a.jpg
 
   const {
     data: game,
@@ -30,6 +41,16 @@ export default function GameDetails() {
     isError,
     error
   } = useGetGameDetailsQuery(id);
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 6,
+    slidesToScroll: 1,
+    prevArrow: <PrevArrow />,
+    nextArrow: <NextArrow />,
+  };
 
   if (isError) {
     return <Error error={error.message} />
@@ -40,7 +61,7 @@ export default function GameDetails() {
     const publishers = game[0].involved_companies.filter(company => company.publisher);
     return (
       <div className="flex flex-col items-center box-border bg-slate-100 dark:bg-slate-800 transition-colors">
-        <div className="md:w-9/12 bg-slate-200 dark:bg-slate-900 p-5 rounded">
+        <div className="md:w-9/12 bg-slate-200 dark:bg-slate-900 p-5 rounded mb-9">
           <div className="flex justify-between">
             <div className="w-2/5">
               <img className="rounded" src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${game[0].cover.image_id}.jpg`} alt={game[0].name} />
@@ -52,58 +73,19 @@ export default function GameDetails() {
                 <h2 className="dark:text-white text-xl font-bold my-2">About</h2>
                 <p className="dark:text-white">{game[0].summary}</p>
               </div>
-              <div className="flex items-center my-3">
-                <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Release Date</h2>
-                <p className="dark:text-white">{unixToFullDate(game[0].first_release_date)}</p>
-              </div>
-              {developers.length > 0 && <div className="flex items-center my-3">
-                <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Developer</h2>
-                <p className="dark:text-white">{developers.map((company, index) => {
-                  const comma = index !== developers.length - 1 ? ', ' : '';
-                  return company.company.name + comma;
-                })}</p>
-              </div>}
-              {publishers.length > 0 && <div className="flex items-center my-3">
-                <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Publisher</h2>
-                <p className="dark:text-white">{publishers.map((company, index) => {
-                  const comma = index !== publishers.length - 1 ? ', ' : '';
-                  return company.company.name + comma;
-                })}</p>
-              </div>}
-              <div className="flex items-center my-3">
-                <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Platforms</h2>
-                <p className="dark:text-white">{game[0].platforms.map((platform, index) => {
-                  const comma = index !== game[0].platforms.length - 1 ? ', ' : '';
-                  return platform.name + comma;
-                })}</p>
-              </div>
-              <div className="flex items-center my-3">
-                <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Genre</h2>
-                <p className="dark:text-white">{game[0].genres.map((genre, index) => {
-                  const comma = index !== game[0].genres.length - 1 ? ', ' : '';
-                  return genre.name + comma;
-                })}</p>
-              </div>
-              {game[0].themes &&
-                <div className="flex items-center my-3">
-                  <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Themes</h2>
-                  <p className="dark:text-white">{game[0].themes.map((theme, index) => {
-                    const comma = index !== game[0].themes.length - 1 ? ', ' : '';
-                    return theme.name + comma;
-                  })}</p>
-                </div>
-              }
-              <div className="flex items-center my-3">
-                <h2 className="dark:text-white text-lg font-bold min-w-[40%]">Game Modes</h2>
-                <p className="dark:text-white">{game[0].game_modes.map((mode, index) => {
-                  const comma = index !== game[0].game_modes.length - 1 ? ', ' : '';
-                  return mode.name + comma;
-                })}</p>
-              </div>
+              <GameDetailsPara title="Release Date" info={game[0].first_release_date} />
+              {developers.length > 0 && <GameDetailsPara title="Developer" info={developers} />}
+              {publishers.length > 0 && <GameDetailsPara title="Publisher" info={publishers} />}
+              <GameDetailsPara title="Platforms" info={game[0].platforms} />
+              <GameDetailsPara title="Genres" info={game[0].genres} />
+              <GameDetailsPara title="Themes" info={game[0].themes} />
+              <GameDetailsPara title="Game Modes" info={game[0].game_modes} />
+              <GameDetailsPara title="Player Perspectives" info={game[0].player_perspectives} />
             </section>
           </div>
           <section>
-            <h2 className="dark:text-white text-3xl font-bold mt-10 mb-5">Screenshots</h2>
+            <h2 className="dark:text-white text-3xl font-bold mt-10">Screenshots</h2>
+            <div className="h-1 bg-sky-400 w-16 mb-5"></div>
             <Carousel
               emulateTouch={true}
               useKeyboardArrows={true}
@@ -119,24 +101,22 @@ export default function GameDetails() {
             </Carousel>
           </section>
           <section>
-            <h2 className="dark:text-white text-3xl font-bold mt-10 mb-5">Similar Games</h2>
-            <Carousel
-              emulateTouch={true}
-              useKeyboardArrows={true}
-              // showIndicators={false}
-              showStatus={false}
-              centerMode={true}
-              centerSlidePercentage={20}>
+            <h2 className="dark:text-white text-3xl font-bold mt-10">Similar Games</h2>
+            <div className="h-1 bg-emerald-400 w-16 mb-5"></div>
+            <Slider {...settings}>
             {game[0].similar_games.map(game => {
               return (
                 <Link to={`/games/${game.id}`} key={game.id}>
-                  <div>
-                    <img src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`} alt={game.name} />
+                  <div className="relative">
+                    <div className="hover:brightness-150 hover:contrast-50 transition">
+                      <img src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`} alt={game.name} />
+                    </div>
+                    <span className="absolute z-10 bottom-0 left-0 right-0 text-white font-bold p-4 bg-gradient-to-b from-transparent to-black drop-shadow-md">{game.name}</span>
                   </div>
                 </Link>
               )
             })}
-            </Carousel>
+            </Slider>
           </section>
         </div>
       </div>

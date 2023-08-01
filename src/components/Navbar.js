@@ -3,7 +3,6 @@ import { useLazyGetSearchQuery } from '../features/api/apiSlice';
 import { setFetchedGames, setGames, setIsSearch, sortByCategory } from '../features/games/gamesSlice';
 import { clearFilters } from '../features/filters/filterSlice';
 import { onPageChange } from '../features/pagination/paginationSlice';
-// import { changeSortCategory, changeOrder } from '../features/sorting/sortingSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Link, useNavigate, } from 'react-router-dom';
@@ -40,8 +39,6 @@ export default function Navbar() {
     dispatch(clearFilters()); 
     trigger(searchInput);
     dispatch(onPageChange({ currentPage: 1 }));
-    // dispatch(changeSortCategory({ sortBy: 'Rating' }));
-    // dispatch(changeOrder({ descendingOrder: true }));
     navigate('/'); // redirect to the home page 
   }
 
