@@ -59,6 +59,15 @@ export const apiSlice = createApi({
           w game.total_rating != n & game.cover != n & game.parent_game = n & game.version_parent = n & game.first_release_date != n; l 200;`
       })
     }),
+    getSearchDropdown: builder.query({
+      query: (search) => ({
+        url: '/search',
+        method: 'POST',
+        headers: HEADERS,
+        body: `search "${search}"; f game.name, game.cover.url, game.first_release_date; 
+          w game.total_rating != n & game.cover != n & game.parent_game = n & game.version_parent = n & game.first_release_date != n; l 10;`
+      })
+    }),
     getGenres: builder.query({
       query: () => ({
         url: '/genres',
@@ -115,8 +124,8 @@ export const apiSlice = createApi({
         headers: HEADERS,
         body: `f name, cover.url, cover.image_id, first_release_date, total_rating, genres.name, platforms.name, summary, themes.name, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, game_modes.name, player_perspectives.name, screenshots.image_id, similar_games.name, similar_games.cover.image_id; w id = ${gameId};`
       })
-    })
+    }),
   })
 })
 
-export const { useGetGamesQuery, useLazyGetSearchQuery, useGetGenresQuery, useGetThemesQuery, useGetModesQuery, useGetPerspectiveQuery, useLazyGetFilteredResultsQuery, useGetGameDetailsQuery } = apiSlice;
+export const { useGetGamesQuery, useLazyGetSearchQuery, useLazyGetSearchDropdownQuery, useGetGenresQuery, useGetThemesQuery, useGetModesQuery, useGetPerspectiveQuery, useLazyGetFilteredResultsQuery, useGetGameDetailsQuery } = apiSlice;

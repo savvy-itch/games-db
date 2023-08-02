@@ -12,6 +12,8 @@ import Footer from './components/Footer';
 // remove filterCategory from an array when dispatching removeFilter if it ends up not needed
 // on Home page click clear search input
 // change name to Games Vault
+// add checks for any absent properties in GameDetails
+// change GameDetailsPara from text to links
 
 function App() {
   return (

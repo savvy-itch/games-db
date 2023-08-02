@@ -12,16 +12,19 @@ import FilterSection from '../features/filters/FilterSection';
 import SortingBtns from '../components/SortingBtns';
 import Error from '../components/Error';
 import GameCard from '../features/games/GameCard';
+import { useLocation } from 'react-router-dom';
 
 // single game page
 // dropdown menu of matches on search input
 // add loaders between data fetching
 // remove filterCategory from an array when dispatching removeFilter if it ends up not needed
+// toggle isSeatch back to false when clicking on the home page
 
 const pageSize = 10;
 
 function Home() {
   const [paginatedGames, setPaginatedGames] = useState([]);
+  const location = useLocation();
   // needed to determine when filtering whether new data should be fetched or not
   const pagination = useSelector(state => state.pagination);
   const gamesState = useSelector(state => state.games);
@@ -29,6 +32,7 @@ function Home() {
 
   const {
     data: games,
+    refetch: refetchGames,
     isLoading: gamesLoading,
     isSuccess: gamesSuccess,
     isError: gamesError,
@@ -44,6 +48,12 @@ function Home() {
       dispatch(changeOrder({ descendingOrder: true }));
     }
   }, [games, dispatch]);
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      console.log('refetch')
+    }
+  }, [location.pathname])
 
   useEffect(() => {
     function paginateGames(results) {
@@ -90,7 +100,8 @@ function Home() {
 
   return (
     <div className="App flex flex-col items-center box-border bg-slate-100 dark:bg-slate-800 transition-colors">
-      <div className="md:w-9/12 bg-slate-200 dark:bg-slate-900 p-3 min-h-screen rounded mb-9">
+      <div className="md:w-9/12 bg-slate-200 dark:bg-slate-900 p-3 rounded mb-9"> 
+        {/* min-h-screen */}
         {content}
       </div>
     </div>

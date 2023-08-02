@@ -111,10 +111,9 @@ export default function GameDetails() {
                     <div className="hover:brightness-150 hover:contrast-50 transition">
                       <img src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`} alt={game.name} />
                     </div>
-                    <span className="absolute z-10 bottom-0 left-0 right-0 text-white font-bold p-4 bg-gradient-to-b from-transparent to-black drop-shadow-md">{game.name}</span>
+                    <span className="absolute text-center z-10 bottom-0 left-0 right-0 text-white font-bold p-4 bg-gradient-to-b from-transparent to-black drop-shadow-md">{game.name}</span>
                   </div>
-                </Link>
-              )
+                </Link>)
             })}
             </Slider>
           </section>

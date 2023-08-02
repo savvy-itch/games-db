@@ -26,7 +26,6 @@ export default function Navbar() {
   useEffect(() => {
     if (searchResult) {
       const nestedSearchResults = searchResult.map(obj => obj.game);
-      console.log(nestedSearchResults);
       // store fetched games
       dispatch(setFetchedGames({ fetchedGamesList: nestedSearchResults}));
       dispatch(setGames({ gamesList: nestedSearchResults}));
