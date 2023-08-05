@@ -1,4 +1,0 @@
-- dropdown menu of matches on search input
-- add loaders between data fetching
-- add games to played list;
-- mark games as favourites;

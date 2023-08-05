@@ -5,26 +5,24 @@ import '../App.css';
 import '../index.css';
 
 import Loading from '../components/Loading';
-import { setFetchedGames, setGames } from '../features/games/gamesSlice';
+import { setFetchedGames, setGames, setIsSearch } from '../features/games/gamesSlice';
 import Pagination from '../components/Pagination'
 import { changeOrder, changeSortCategory } from '../features/sorting/sortingSlice';
 import FilterSection from '../features/filters/FilterSection';
 import SortingBtns from '../components/SortingBtns';
 import Error from '../components/Error';
 import GameCard from '../features/games/GameCard';
-import { useLocation } from 'react-router-dom';
 
-// single game page
-// dropdown menu of matches on search input
 // add loaders between data fetching
 // remove filterCategory from an array when dispatching removeFilter if it ends up not needed
-// toggle isSeatch back to false when clicking on the home page
+// add checks for missing data in GameDetails
+// align similar games to be the same height always
+// responsive styles
 
 const pageSize = 10;
 
 function Home() {
   const [paginatedGames, setPaginatedGames] = useState([]);
-  const location = useLocation();
   // needed to determine when filtering whether new data should be fetched or not
   const pagination = useSelector(state => state.pagination);
   const gamesState = useSelector(state => state.games);
@@ -32,7 +30,6 @@ function Home() {
 
   const {
     data: games,
-    refetch: refetchGames,
     isLoading: gamesLoading,
     isSuccess: gamesSuccess,
     isError: gamesError,
@@ -41,6 +38,7 @@ function Home() {
   useEffect(() => {
     if (games && games.length > 0) {
       // store fetched games
+      dispatch(setIsSearch({ isSearch: false}));
       dispatch(setFetchedGames({ fetchedGamesList: games}));
       // store games for displaying
       dispatch(setGames({ gamesList: games}));
@@ -48,12 +46,6 @@ function Home() {
       dispatch(changeOrder({ descendingOrder: true }));
     }
   }, [games, dispatch]);
-
-  useEffect(() => {
-    if (location.pathname === "/") {
-      console.log('refetch')
-    }
-  }, [location.pathname])
 
   useEffect(() => {
     function paginateGames(results) {
