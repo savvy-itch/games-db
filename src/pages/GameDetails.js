@@ -103,13 +103,13 @@ export default function GameDetails() {
           <section>
             <h2 className="dark:text-white text-3xl font-bold mt-10">Similar Games</h2>
             <div className="h-1 bg-emerald-400 w-16 mb-5"></div>
-            <Slider {...settings} className="relative h-56">
+            <Slider {...settings} className="relative h-36 md:h-56">
             {game[0].similar_games.map(game => {
               return (
                 <Link to={`/games/${game.id}`} key={game.id} className="overflow-hidden min-h-full">
                   <div className="relative">
                     <div className="hover:brightness-150 hover:contrast-50 transition">
-                      <img className="h-56 w-full object-cover" src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`} alt={game.name} />
+                      <img className="h-36 md:h-56 w-full object-cover" src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`} alt={game.name} />
                     </div>
                     <span className="absolute text-center z-10 bottom-0 left-0 right-0 text-white font-bold p-4 bg-gradient-to-b from-transparent to-black drop-shadow-md">{game.name}</span>
                   </div>

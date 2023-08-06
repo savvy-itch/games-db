@@ -4,8 +4,8 @@ import { FaGithub, FaTwitter, FaTelegram } from "react-icons/fa6";
 export default function Footer() {
   return (
     <section className="text-center box-border bg-stone-300 dark:bg-stone-900 border-t-2 dark:border-t-slate-300 border-t-slate-900 py-4 px-8 transition-colors">
-      <div className="flex justify-between items-center">
-        <p className="dark:text-white text-left w-1/4"><span className="font-bold">Games Vault</span> is a website including all the necessary information on your favourite video games</p>
+      <div className="flex flex-col text-center sm:text-left sm:flex-row justify-between items-center">
+        <p className="dark:text-white text-left xl:w-1/4"><span className="font-bold">Games Vault</span> is a website including all the necessary information on your favourite video games</p>
         <div className="flex justify-end my-5">
           <a className="mx-4 text-3xl dark:text-white hover:text-orange-600 dark:hover:text-orange-600 transition-colors" href="https://github.com/spr0neInBlazer">
             <FaGithub />

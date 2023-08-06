@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setIsSearch } from '../games/gamesSlice';
 import { useLazyGetSearchDropdownQuery } from '../api/apiSlice';
@@ -8,14 +8,14 @@ import Error from '../../components/Error';
 import { FaSearch } from "react-icons/fa";
 import { unixToDate } from '../../helpers';
 
-// click on dropdown link closes the dropdown before re-directing
-
 export default function SearchForm({ onSubmit }) {
   const [searchInput, setSearchInput] = useState('');
   const [results, setResults] = useState([]);
   const [currentField, setCurrentField] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const inputRef = useRef();
+  const dropdownRef = useRef();
 
   const [
     trigger, {
@@ -90,6 +90,21 @@ export default function SearchForm({ onSubmit }) {
     }
   }
 
+  function closeDropdown(e) {
+    if (!dropdownRef.current.contains(e.target)) {
+      setResults([]);
+      setCurrentField(null);
+    }
+  }
+
+  useEffect(() => {
+    if (results.length > 0) {
+      window.addEventListener('click', closeDropdown);
+    } else {
+      window.removeEventListener('click', closeDropdown);
+    }
+  }, [results]);
+
   let dropdownContent;
   if (isLoading) {
     dropdownContent = <div className="bg-white flex justify-center p-3 w-64">
@@ -119,7 +134,7 @@ export default function SearchForm({ onSubmit }) {
             value={searchInput} 
             onChange={handleSearchInputChange}
             onKeyDown={navigateDropdown}
-            onBlur={() => setResults([])} 
+            ref={inputRef}
             />
         </div>
         <button className="rounded-r-md bg-sky-500/75 text-white font-bold px-3 py-1 transition-colors flex items-center hover:bg-sky-600/75" 
@@ -128,7 +143,7 @@ export default function SearchForm({ onSubmit }) {
           <FaSearch />
         </button>
       </form>
-      <div className="absolute top-full overflow-hidden rounded">
+      <div className="absolute top-full overflow-hidden rounded" ref={dropdownRef}>
         {dropdownContent}
       </div>
     </section>

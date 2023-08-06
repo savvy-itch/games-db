@@ -17,6 +17,7 @@ import GameCard from '../features/games/GameCard';
 // remove filterCategory from an array when dispatching removeFilter if it ends up not needed
 // add checks for missing data in GameDetails
 // align similar games to be the same height always
+// replace game info text w/ links
 // responsive styles
 
 const pageSize = 10;
